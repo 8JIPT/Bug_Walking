@@ -1,0 +1,603 @@
+// ----------------------------------------------------------------
+// From Game Programming in C++ by Sanjay Madhav
+// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
+// 
+// Released under the BSD License
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <fstream>
+#include "CSV.h"
+#include "Game.h"
+#include "Components/Drawing/DrawComponent.h"
+#include "Components/Physics/RigidBodyComponent.h"
+#include "Random.h"
+#include "Actors/Actor.h"
+#include "Actors/Block.h"
+#include "Actors/Goomba.h"
+#include "Actors/Spawner.h"
+#include "Actors/Mario.h"
+#include "Actors/Mushroom.h"
+#include "AudioSystem.h"
+#include "UI/Screens/HUD.h"
+#include "UI/Screens/MainMenu.h"
+#include "UI/Screens/PauseMenu.h"
+#include "UI/Screens/CrossFadeScreen.h"
+
+Game::Game()
+        :mWindow(nullptr)
+        ,mRenderer(nullptr)
+        ,mTicksCount(0)
+        ,mIsRunning(true)
+        ,mIsDebugging(false)
+        ,mUpdatingActors(false)
+        ,mCameraPos(Vector2::Zero)
+        ,mMario(nullptr)
+        ,mAudio(nullptr)
+        ,mHUD(nullptr)
+        ,mLevelData(nullptr)
+        ,mIsPaused(false)
+        ,mIsSceneTransitioning(false)
+        ,mMusicHandle(SoundHandle::Invalid)
+{
+
+}
+
+bool Game::Initialize()
+{
+    Random::Init();
+
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
+    {
+        SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+        return false;
+    }
+
+    // Init SDL Image
+    int imgFlags = IMG_INIT_PNG;
+    if (!(IMG_Init(imgFlags) & imgFlags))
+    {
+        SDL_Log("Unable to initialize SDL_image: %s", IMG_GetError());
+        return false;
+    }
+
+    // Initialize SDL_ttf
+    if (TTF_Init() != 0)
+    {
+        SDL_Log("Failed to initialize SDL_ttf");
+        return false;
+    }
+
+    // Initialize SDL_mixer
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == -1)
+    {
+        SDL_Log("Failed to initialize SDL_mixer: %s", Mix_GetError());
+        return false;
+    }
+
+    mWindow = SDL_CreateWindow("Bug Walking",SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,WINDOW_WIDTH, WINDOW_HEIGHT,SDL_WINDOW_OPENGL);
+    if (!mWindow)
+    {
+        SDL_Log("Failed to create window: %s", SDL_GetError());
+        return false;
+    }
+
+    mRenderer = new Renderer(mWindow);
+    mRenderer->Initialize(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    mAudio = new AudioSystem();
+
+    // Start with main menu scene
+    SetScene(GameScene::MainMenu);
+
+    mTicksCount = SDL_GetTicks();
+
+    return true;
+}
+
+void Game::InitializeActors()
+{
+    // Load and build level for playing scene
+    mLevelData = LoadLevel("../Assets/Levels/custom/custom.csv", LEVEL_WIDTH, LEVEL_HEIGHT);
+    if (mLevelData) BuildLevel(mLevelData, LEVEL_WIDTH, LEVEL_HEIGHT);
+}
+
+void Game::UnloadScene()
+{
+    // Set all actors to destroy so they will be deleted in UpdateActors
+    for (auto* actor : mActors) {
+        actor->SetState(ActorState::Destroy);
+    }
+
+    // Delete UI screens (preserve crossfade if present)
+    auto iter = mUIStack.begin();
+    while (iter != mUIStack.end()) {
+        if (dynamic_cast<CrossFadeScreen*>(*iter) != nullptr) {
+            ++iter;
+        } else {
+            // Check if this is the HUD before deleting
+            if (*iter == mHUD) {
+                mHUD = nullptr;
+            }
+            delete *iter;
+            iter = mUIStack.erase(iter);
+        }
+    }
+
+    // Delete level data (if any)
+    if (mLevelData) {
+        for (int i = 0; i < LEVEL_HEIGHT; ++i) {
+            delete[] mLevelData[i];
+        }
+        delete[] mLevelData;
+        mLevelData = nullptr;
+    }
+
+    // Reset pointers
+    mMario = nullptr;
+    // HUD already deleted in the UI stack loop above
+    mHUD = nullptr;
+}
+
+void Game::SetScene(GameScene nextScene)
+{
+    mIsSceneTransitioning = true;
+
+    // If we are not paused, unload current scene so the new one starts clean.
+    if (!mIsPaused) UnloadScene();
+
+    switch (nextScene) {
+        case GameScene::MainMenu: {
+            auto* menu = new MainMenu(this, "../Assets/Fonts/Arial.ttf");
+            // Start music if not already playing
+            if (mMusicHandle == SoundHandle::Invalid || mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
+                mMusicHandle = mAudio->PlaySound("Music.ogg", true);
+            }
+            break;
+        }
+        case GameScene::Level1: {
+            // Initialize level and HUD
+            mLevelData = LoadLevel("../Assets/Levels/custom/custom.csv", LEVEL_WIDTH, LEVEL_HEIGHT);
+            if (mLevelData) BuildLevel(mLevelData, LEVEL_WIDTH, LEVEL_HEIGHT);
+
+            mHUD = new HUD(this, "../Assets/Fonts/Arial.ttf");
+            break;
+        }
+        case GameScene::PauseMenu: {
+            auto* pauseMenu = new PauseMenu(this, "../Assets/Fonts/Arial.ttf");
+            if (mAudio) mAudio->PauseSound(mMusicHandle);
+            break;
+        }
+        default:
+            SDL_Log("Unknown scene.");
+            break;
+    }
+
+    mIsSceneTransitioning = false;
+}
+
+int **Game::LoadLevel(const std::string& fileName, int width, int height)
+{
+    int** level = new int*[height];
+    for (int i = 0; i < height; ++i)
+        level[i] = new int[width];
+
+    std::ifstream file(fileName);
+    if (!file.is_open()) {
+        SDL_Log("Failed to open level file: %s", fileName.c_str());
+        return nullptr;
+    }
+    std::string line;
+    int row = 0;
+    while (std::getline(file, line) && row < height){
+        std::vector<int> tiles = CSVHelper::Split(line);
+        for (int col = 0; col < width && col < tiles.size(); ++col){
+            level[row][col] = tiles[col];
+            SDL_Log("Tile[%d][%d] = %d", row, col, level[row][col]);
+        }
+        ++row;
+    }
+
+    return level;
+}
+
+void Game::BuildLevel(int** levelData, int width, int height)
+{
+    for (int row = 0; row < height; ++row){
+        for (int col = 0; col < width; ++col){
+            int tileID = levelData[row][col];
+
+            Vector2 position(col * TILE_SIZE + TILE_SIZE * 0.5f, row * TILE_SIZE + TILE_SIZE * 0.5f);
+
+            switch (tileID){
+                case 0:{
+                    //block A
+                    Block* blockA = new Block(this, "../Assets/Sprites/Blocks/BlockA.png");
+                    blockA->SetPosition(position);
+                    break;
+                }
+                case 1:{
+                    //block C
+                    Block* blockC = new Block(this, "../Assets/Sprites/Blocks/BlockC.png");
+                    blockC->SetPosition(position);
+                    break;
+                }
+                case 2:{
+                    //block F (pipe top left)
+                    Block* blockF = new Block(this, "../Assets/Sprites/Blocks/BlockF.png");
+                    blockF->SetPosition(position);
+                    break;
+                }
+                case 4:{
+                    //block B
+                    Block* blockB = new Block(this, "../Assets/Sprites/Blocks/BlockB.png", true);
+                    blockB->SetPosition(position);
+                    break;
+                }
+                case 5:{
+                    //block E
+                    Block* blockE = new Block(this, "../Assets/Sprites/Blocks/BlockE.png");
+                    blockE->SetPosition(position);
+                    break;
+                }
+                case 6:{
+                    //block I (pipe bottom right)
+                    Block* blockI = new Block(this, "../Assets/Sprites/Blocks/BlockI.png");
+                    blockI->SetPosition(position);
+                    break;
+                }
+                case 8:{
+                    //block D
+                    Block* blockD = new Block(this, "../Assets/Sprites/Blocks/BlockD.png");
+                    blockD->SetPosition(position);
+                    break;
+                }
+                case 9:{
+                    //block H (pipe bottom left)
+                    Block* blockH = new Block(this, "../Assets/Sprites/Blocks/BlockH.png");
+                    blockH->SetPosition(position);
+                    break;
+                }
+                case 10:{
+                    //spawner goomba
+                    Spawner* spawnerG = new Spawner(this, SPAWN_DISTANCE);
+                    spawnerG->SetPosition(position);
+                    break;
+                }
+                case 12:{
+                    //block G (pipe top right)
+                    Block* blockG = new Block(this, "../Assets/Sprites/Blocks/BlockG.png");
+                    blockG->SetPosition(position);
+                    break;
+                }
+                case 13:{
+                    //Block(skin blockC) that if hit generates mushroom
+                    Block* MushroomBlock = new Block(this, "../Assets/Sprites/Blocks/BlockC.png", true, true);
+                    MushroomBlock->SetPosition(position);
+                    break;
+                }
+                case 16:{
+                    //mario
+                    mMario = new Mario(this);
+                    mMario->SetPosition(position);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+    }
+}
+
+void Game::RunLoop()
+{
+    while (mIsRunning)
+    {
+        // Calculate delta time in seconds
+        float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
+        if (deltaTime > 0.05f)
+        {
+            deltaTime = 0.05f;
+        }
+
+        mTicksCount = SDL_GetTicks();
+
+        ProcessInput();
+        UpdateGame(deltaTime);
+        GenerateOutput();
+
+        // Sleep to maintain frame rate
+        int sleepTime = (1000 / FPS) - (SDL_GetTicks() - mTicksCount);
+        if (sleepTime > 0)
+        {
+            SDL_Delay(sleepTime);
+        }
+    }
+}
+
+void Game::ProcessInput()
+{
+    SDL_Event event;
+    while (SDL_PollEvent(&event))
+    {
+        switch (event.type)
+        {
+            case SDL_QUIT:
+                Quit();
+                break;
+            case SDL_KEYDOWN:
+                if (!event.key.repeat){
+                    // Check for pause menu toggle first (only if in-game with only HUD)
+                    if (event.key.keysym.sym == SDLK_RETURN && mMario != nullptr){
+                        bool onlyHUD = true;
+                        for (auto* ui : mUIStack) {
+                            if (dynamic_cast<HUD*>(ui) == nullptr) {
+                                onlyHUD = false;
+                                break;
+                            }
+                        }
+                        if (onlyHUD) {
+                            mIsPaused = true;
+                            SetScene(GameScene::PauseMenu);
+                            break;
+                        }
+                    }
+                    // Let topmost UI handle key press
+                    if (!mUIStack.empty()){
+                        mUIStack.back()->HandleKeyPress(event.key.keysym.sym);
+                    }
+                }
+                break;
+        }
+    }
+
+    const Uint8* state = SDL_GetKeyboardState(nullptr);
+
+    for (auto actor : mActors)
+    {
+        actor->ProcessInput(state);
+    }
+}
+
+void Game::UpdateGame(float deltaTime)
+{
+    if (!mIsPaused && !mIsSceneTransitioning) {
+        // Update all actors and pending actors
+        UpdateActors(deltaTime);
+
+        // Update audio system
+        if (mAudio) mAudio->Update(deltaTime);
+
+        // Check if Mario is dead
+        if (mMario && mMario->IsDead()) {
+            mIsRunning = false;
+            return;
+        }
+
+        // Update camera position
+        UpdateCamera();
+    }
+
+    // Update UI screens (active ones)
+    for (auto ui : mUIStack) {
+        if (ui->GetState() == UIScreen::UIState::Active) {
+            ui->Update(deltaTime);
+        }
+    }
+
+    // Delete any UI that are closed
+    auto iter = mUIStack.begin();
+    while (iter != mUIStack.end()) {
+        if ((*iter)->GetState() == UIScreen::UIState::Closing) {
+            delete *iter;
+            iter = mUIStack.erase(iter);
+        } else {
+            ++iter;
+        }
+    }
+}
+
+void Game::UpdateActors(float deltaTime)
+{
+    mUpdatingActors = true;
+    for (auto actor : mActors)
+    {
+        actor->Update(deltaTime);
+    }
+    mUpdatingActors = false;
+
+    for (auto pending : mPendingActors)
+    {
+        mActors.emplace_back(pending);
+    }
+    mPendingActors.clear();
+
+    std::vector<Actor*> deadActors;
+    for (auto actor : mActors)
+    {
+        if (actor->GetState() == ActorState::Destroy)
+        {
+            if (std::find(deadActors.begin(), deadActors.end(), actor) == deadActors.end()) deadActors.emplace_back(actor);
+        }
+    }
+    for (auto actor : deadActors) {
+        const auto& comps = actor->GetComponents();
+        SDL_Log("Deleting actor at %p, type=%s, numComponents=%zu", actor, actor->GetName(), comps.size());
+    }
+    for (auto actor : deadActors)
+    {
+        //SDL_Log("Deleting actor at %p, type=%s", actor, actor->GetName());
+        RemoveActor(actor);
+        delete actor;
+    }
+}
+
+void Game::UpdateCamera()
+{
+    if (!mMario) {
+        return;
+    }
+
+    float marioX = mMario->GetPosition().x;
+    float marioY = mMario->GetPosition().y;
+
+    float targetX = marioX - WINDOW_WIDTH / 2.0f + TILE_SIZE / 2.0f;
+    float targetY = marioY - WINDOW_HEIGHT / 2.0f + TILE_SIZE / 2.0f;
+
+    if (targetX > mCameraLeftBoundary)
+        mCameraLeftBoundary = targetX;
+
+    targetX = mCameraLeftBoundary;
+
+    float levelWidthInPixels = LEVEL_WIDTH * TILE_SIZE;
+    float levelHeightInPixels = LEVEL_HEIGHT * TILE_SIZE;
+
+    if (targetX < 0) targetX = 0;
+    if (targetX > levelWidthInPixels - WINDOW_WIDTH) targetX = levelWidthInPixels - WINDOW_WIDTH;
+
+    if (targetY < 0) targetY = 0;
+    if (targetY > levelHeightInPixels - WINDOW_HEIGHT) targetY = levelHeightInPixels - WINDOW_HEIGHT;
+
+    mCameraPos.x = targetX;
+    mCameraPos.y = targetY;
+}
+
+void Game::AddActor(Actor* actor)
+{
+    if (mUpdatingActors)
+    {
+        mPendingActors.emplace_back(actor);
+    }
+    else
+    {
+        mActors.emplace_back(actor);
+    }
+}
+
+void Game::RemoveActor(Actor* actor)
+{
+    auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
+    if (iter != mPendingActors.end())
+    {
+        // Swap to end of vector and pop off (avoid erase copies)
+        std::iter_swap(iter, mPendingActors.end() - 1);
+        mPendingActors.pop_back();
+    }
+
+    iter = std::find(mActors.begin(), mActors.end(), actor);
+    if (iter != mActors.end())
+    {
+        // Swap to end of vector and pop off (avoid erase copies)
+        std::iter_swap(iter, mActors.end() - 1);
+        mActors.pop_back();
+    }
+}
+
+void Game::AddDrawable(class DrawComponent *drawable)
+{
+    mDrawables.emplace_back(drawable);
+
+    std::sort(mDrawables.begin(), mDrawables.end(),[](DrawComponent* a, DrawComponent* b) {
+        return a->GetDrawOrder() < b->GetDrawOrder();
+    });
+}
+
+void Game::RemoveDrawable(class DrawComponent *drawable)
+{
+    auto iter = std::find(mDrawables.begin(), mDrawables.end(), drawable);
+    mDrawables.erase(iter);
+}
+
+void Game::AddCollider(class AABBColliderComponent* collider)
+{
+    mColliders.emplace_back(collider);
+}
+
+void Game::RemoveCollider(AABBColliderComponent* collider)
+{
+    auto iter = std::find(mColliders.begin(), mColliders.end(), collider);
+    mColliders.erase(iter);
+}
+
+void Game::GenerateOutput()
+{
+    // Clear back buffer
+    mRenderer->Clear();
+
+    //background drawing (only when in gameplay)
+    if (mMario) {
+        Texture* bgTexture = mRenderer->GetTexture("../Assets/Sprites/Background.png");
+        if (bgTexture){
+            Vector2 size(LEVEL_WIDTH * TILE_SIZE, LEVEL_HEIGHT * TILE_SIZE);
+
+            Vector2 topLeft = Vector2(LEVEL_WIDTH * TILE_SIZE / 2.0f, LEVEL_HEIGHT * TILE_SIZE / 2.0f);
+            mRenderer->DrawTexture(topLeft, size, 0.0f, Vector3::One, bgTexture, Vector4::UnitRect, mCameraPos, false);
+        }
+    }
+
+    for (auto drawable : mDrawables)
+    {
+        drawable->Draw(mRenderer);
+
+        if(mIsDebugging)
+        {
+           // Call draw for actor components
+              for (auto comp : drawable->GetOwner()->GetComponents())
+              {
+                comp->DebugDraw(mRenderer);
+              }
+        }
+    }
+
+    // Draw UI elements
+    mRenderer->Draw();
+
+    // Swap front buffer and back buffer
+    mRenderer->Present();
+}
+
+void Game::Shutdown()
+{
+    // Delete actors (destructors should call RemoveActor safely)
+    while (!mActors.empty()) {
+        delete mActors.back();
+    }
+
+    // Delete UI screens
+    for (auto ui : mUIStack) {
+        delete ui;
+    }
+    mUIStack.clear();
+
+    // Delete level data if still present
+    if (mLevelData) {
+        for (int i = 0; i < LEVEL_HEIGHT; ++i) {
+            delete[] mLevelData[i];
+        }
+        delete[] mLevelData;
+        mLevelData = nullptr;
+    }
+
+    // Renderer cleanup
+    if (mRenderer) {
+        mRenderer->Shutdown();
+        delete mRenderer;
+        mRenderer = nullptr;
+    }
+
+    // Audio cleanup
+    if (mAudio) {
+        delete mAudio;
+        mAudio = nullptr;
+    }
+
+    if (mWindow) {
+        SDL_DestroyWindow(mWindow);
+        mWindow = nullptr;
+    }
+
+    SDL_Quit();
+}
