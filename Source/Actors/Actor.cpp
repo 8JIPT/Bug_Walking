@@ -84,6 +84,11 @@ void Actor::OnVerticalCollision(const float minOverlap, AABBColliderComponent* o
 
 }
 
+void Actor::TakeDamage(int damage)
+{
+    Kill();
+}
+
 void Actor::Kill()
 {
 

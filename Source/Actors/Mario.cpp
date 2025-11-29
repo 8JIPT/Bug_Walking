@@ -140,6 +140,14 @@ void Mario::OnHorizontalCollision(const float minOverlap, AABBColliderComponent*
     if (!other || mHitThisFrame) return;
     if (other->GetLayer() == ColliderLayer::Enemy && mHitTimer <= 0.0f){
         mHitThisFrame = true;
+        if (Actor* enemy = other->GetOwner()) {
+            const char* enemyName = enemy->GetName();
+            if (strcmp(enemyName, "Missile") == 0) {
+                enemy->Kill();
+                SDL_Log("Mario killed Missile on horizontal collision");
+            }
+        }
+        
         if (mIsSuper){
             PowerDown();
         } else{
@@ -186,7 +194,7 @@ void Mario::OnVerticalCollision(const float minOverlap, AABBColliderComponent* o
 
     //stomp only if mario is above
     if (marioFeetY < enemyCenterY){
-        if (Actor* enemy = other->GetOwner()) enemy->Kill();
+        if (Actor* enemy = other->GetOwner()) enemy->TakeDamage(1);
         Vector2 vel = mRigidBodyComponent->GetVelocity();
         vel.y = mJumpSpeed * -0.5f;
         mRigidBodyComponent->SetVelocity(vel);
@@ -195,6 +203,14 @@ void Mario::OnVerticalCollision(const float minOverlap, AABBColliderComponent* o
 
     if (mHitTimer <= 0.0f) {
         mHitThisFrame = true;
+        if (Actor* enemy = other->GetOwner()) {
+            const char* enemyName = enemy->GetName();
+            if (strcmp(enemyName, "Missile") == 0) {
+                enemy->Kill();
+                SDL_Log("Mario killed Missile on vertical collision");
+            }
+        }
+        
         if (mIsSuper){
             PowerDown();
         }else{

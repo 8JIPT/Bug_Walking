@@ -21,10 +21,15 @@
 #include "Actors/Spawner.h"
 #include "Actors/Mario.h"
 #include "Actors/Mushroom.h"
+#include "Actors/Chaser.h"
+#include "Actors/ChaserSpawner.h"
+#include "Actors/Walker.h"
+#include "Actors/WalkerSpawner.h"
 #include "AudioSystem.h"
 #include "UI/Screens/HUD.h"
 #include "UI/Screens/MainMenu.h"
 #include "UI/Screens/PauseMenu.h"
+#include "UI/Screens/GameOver.h"
 #include "UI/Screens/CrossFadeScreen.h"
 
 Game::Game()
@@ -159,6 +164,10 @@ void Game::SetScene(GameScene nextScene)
             break;
         }
         case GameScene::Level1: {
+            // Reset camera to start position
+            mCameraPos = Vector2::Zero;
+            mCameraLeftBoundary = 0.0f;
+            
             // Initialize level and HUD
             mLevelData = LoadLevel("../Assets/Levels/custom/custom.csv", LEVEL_WIDTH, LEVEL_HEIGHT);
             if (mLevelData) BuildLevel(mLevelData, LEVEL_WIDTH, LEVEL_HEIGHT);
@@ -169,6 +178,11 @@ void Game::SetScene(GameScene nextScene)
         case GameScene::PauseMenu: {
             auto* pauseMenu = new PauseMenu(this, "../Assets/Fonts/Arial.ttf");
             if (mAudio) mAudio->PauseSound(mMusicHandle);
+            break;
+        }
+        case GameScene::GameOver: {
+            auto* gameOver = new GameOver(this, "../Assets/Fonts/Arial.ttf");
+            if (mAudio) mAudio->StopSound(mMusicHandle);
             break;
         }
         default:
@@ -261,13 +275,13 @@ void Game::BuildLevel(int** levelData, int width, int height)
                     blockH->SetPosition(position);
                     break;
                 }
-                case 10:{
+                case 100:{
                     //spawner goomba
                     Spawner* spawnerG = new Spawner(this, SPAWN_DISTANCE);
                     spawnerG->SetPosition(position);
                     break;
                 }
-                case 12:{
+                case 120:{
                     //block G (pipe top right)
                     Block* blockG = new Block(this, "../Assets/Sprites/Blocks/BlockG.png");
                     blockG->SetPosition(position);
@@ -277,6 +291,17 @@ void Game::BuildLevel(int** levelData, int width, int height)
                     //Block(skin blockC) that if hit generates mushroom
                     Block* MushroomBlock = new Block(this, "../Assets/Sprites/Blocks/BlockC.png", true, true);
                     MushroomBlock->SetPosition(position);
+                    break;
+                }
+                case 12:{
+                    //spawner chaser (new steering enemy)
+                    //ChaserSpawner* spawnerC = new ChaserSpawner(this, SPAWN_DISTANCE);
+                    //spawnerC->SetPosition(position);
+                    break;
+                }
+                case 10:{
+                    //spawner walker (patrol and chase enemy)
+                    WalkerSpawner* spawnerW = new WalkerSpawner(this, position);
                     break;
                 }
                 case 16:{
@@ -373,7 +398,7 @@ void Game::UpdateGame(float deltaTime)
 
         // Check if Mario is dead
         if (mMario && mMario->IsDead()) {
-            mIsRunning = false;
+            SetScene(GameScene::GameOver);
             return;
         }
 

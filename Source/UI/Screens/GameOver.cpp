@@ -9,13 +9,38 @@
 GameOver::GameOver(class Game* game, const std::string& fontName)
         :UIScreen(game, fontName)
 {
-        AddText("Game Over", Vector2(0.0f, 50.0f), 2.0f);
-        AddButton("Press Enter",[this](){ this->Close(); new CrossFadeScreen(mGame, GameScene::MainMenu); },Vector2(0.0f, -100.0f),1.5f);
+        float centerX = mGame->WINDOW_WIDTH / 2.0f;
+        float centerY = mGame->WINDOW_HEIGHT / 2.0f;
+        AddText("Game Over", Vector2(centerX, centerY - 150.0f), 2.0f, 0.0f, 48);
+
+        // Main Menu button
+        AddRect(Vector2(centerX, centerY), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+        UIButton* mainMenuButton = AddButton("Main Menu", [this]() {
+                this->Close();
+                new CrossFadeScreen(mGame, GameScene::MainMenu);
+        }, Vector2(centerX, centerY), 1.0f, 0.0f, 32, 300, 110);
+        mainMenuButton->SetTextColor(Color::White);
+
+        // Quit button
+        AddRect(Vector2(centerX, centerY + 100.0f), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+        UIButton* quitButton = AddButton("Quit Game", [game = mGame]() {
+                game->Quit();
+        }, Vector2(centerX, centerY + 100.0f), 1.0f, 0.0f, 32, 300, 110);
+        quitButton->SetTextColor(Color::White);
 }
 
 void GameOver::HandleKeyPress(int key)
 {
-        if (key == SDLK_RETURN && !mButtons.empty()){
+        if (mButtons.empty()) return;
+        if (key == SDLK_DOWN) {
+                mButtons[mSelectedButtonIndex]->SetHighlighted(false);
+                mSelectedButtonIndex = (mSelectedButtonIndex + 1) % mButtons.size();
+                mButtons[mSelectedButtonIndex]->SetHighlighted(true);
+        } else if (key == SDLK_UP) {
+                mButtons[mSelectedButtonIndex]->SetHighlighted(false);
+                mSelectedButtonIndex = (mSelectedButtonIndex - 1 + mButtons.size()) % mButtons.size();
+                mButtons[mSelectedButtonIndex]->SetHighlighted(true);
+        } else if (key == SDLK_RETURN || key == SDLK_KP_ENTER) {
                 mButtons[mSelectedButtonIndex]->OnClick();
         }
 }

@@ -124,6 +124,20 @@ float AABBColliderComponent::DetectHorizontalCollision(RigidBodyComponent *rigid
             overlap = minOverlap;
             break;
         }
+
+        // Enemy-Enemy
+        if (mLayer == ColliderLayer::Enemy && collider->GetLayer() == ColliderLayer::Enemy){
+            // Only resolve collision for walkers
+            if (mOwner && strcmp(mOwner->GetName(), "Walker") == 0){
+                Actor* otherActor = collider->GetOwner();
+                if (otherActor && strcmp(otherActor->GetName(), "Walker") == 0){
+                    ResolveHorizontalCollisions(rigidBody, minOverlap);
+                    mOwner->OnHorizontalCollision(minOverlap, collider);
+                    overlap = minOverlap;
+                    break;
+                }
+            }
+        }
     }
 
     return overlap;

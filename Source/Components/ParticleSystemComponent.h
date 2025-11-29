@@ -33,6 +33,7 @@ class ParticleSystemComponent : public Component {
 public:
     ParticleSystemComponent(class Actor* owner, int partibleW, int particleH,  int poolSize = 100, int updateOrder = 10);
     void EmitParticle(float lifetime, float speed, const Vector2& offsetPosition = Vector2::Zero);
+    void SetColor(const Vector3& color);
 
 private:
     std::vector<class Particle*> mParticles;

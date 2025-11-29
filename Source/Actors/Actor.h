@@ -78,6 +78,7 @@ public:
     // Any actor-specific collision code (overridable)
     virtual void OnHorizontalCollision(const float minOverlap, class AABBColliderComponent* other);
     virtual void OnVerticalCollision(const float minOverlap, class AABBColliderComponent* other);
+    virtual void TakeDamage(int damage = 1);
     virtual void Kill();
 
 protected:

@@ -88,3 +88,16 @@ void ParticleSystemComponent::EmitParticle(float lifetime, float speed, const Ve
         }
     }
 }
+
+void ParticleSystemComponent::SetColor(const Vector3& color)
+{
+    // Set color for all particles in the pool
+    for (auto p : mParticles)
+    {
+        auto* drawComponent = p->GetComponent<DrawComponent>();
+        if (drawComponent)
+        {
+            drawComponent->SetColor(color);
+        }
+    }
+}

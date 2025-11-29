@@ -19,7 +19,8 @@ enum class GameScene
 {
     MainMenu,
     Level1,
-    PauseMenu
+    PauseMenu,
+    GameOver
 };
 
 class Game
