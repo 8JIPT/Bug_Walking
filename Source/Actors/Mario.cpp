@@ -8,6 +8,8 @@
 #include "../Components/Physics/RigidBodyComponent.h"
 #include "../Components/Physics/AABBColliderComponent.h"
 #include "../Components/ParticleSystemComponent.h"
+#include  "Bullet.h"
+#include  "../Random.h"
 
 Mario::Mario(Game* game, const float forwardSpeed, const float jumpSpeed)
         : Actor(game)
@@ -15,6 +17,12 @@ Mario::Mario(Game* game, const float forwardSpeed, const float jumpSpeed)
         , mIsDead(false)
         , mForwardSpeed(forwardSpeed)
         , mJumpSpeed(jumpSpeed)
+
+        // mecanica glitch e tiro
+        , mShootCooldown(0.3f)
+        , mShootCooldownTimer(0.0f)
+        , mGlitchDurationTimer(0.0f)
+        , mIsInputLocked(false)
 {
     mNormalDraw = new AnimatorComponent(this, "../Assets/Sprites/Mario/Mario.png", "../Assets/Sprites/Mario/Mario.json", Game::TILE_SIZE, Game::TILE_SIZE, 100);
 
@@ -35,16 +43,41 @@ Mario::Mario(Game* game, const float forwardSpeed, const float jumpSpeed)
     mSuperDraw->SetAnimation("idle");
     mSuperDraw->SetVisible(false);
 
-
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
 
-
     mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::TILE_SIZE, Game::TILE_SIZE, ColliderLayer::Player, false);
+
+    SetRepairLevel(RepairLevel::Critical);
+}
+
+void Mario::SetRepairLevel(RepairLevel level) {
+    mCurrentLevel = level;
+
+    switch (level) {
+    case RepairLevel::Critical:
+        mTimeBetweenGlitches = 10.0f;
+        mShootFailChance = 0.50f;
+        break;
+    case RepairLevel::Damaged:
+        mTimeBetweenGlitches = 20.0f;
+        mShootFailChance = 0.25f;
+        break;
+    case RepairLevel::Fixed:
+        mTimeBetweenGlitches = 99999.0f;
+        mShootFailChance = 0.0f;
+        break;
+    }
+
+    mGlitchTimer = mTimeBetweenGlitches;
 }
 
 void Mario::OnProcessInput(const uint8_t* state)
 {
     mIsRunning = false;
+
+    if (mIsDead || mIsInputLocked) {
+        return;
+    }
 
     if (state[SDL_SCANCODE_D]){
         mRigidBodyComponent->ApplyForce(Vector2(mForwardSpeed, 0.0f));
@@ -57,11 +90,15 @@ void Mario::OnProcessInput(const uint8_t* state)
         mIsRunning = true;
     }
 
-    if (state[SDL_SCANCODE_SPACE] && IsOnGround()){
+    if (state[SDL_SCANCODE_W] && IsOnGround()){
         Vector2 vel = mRigidBodyComponent->GetVelocity();
         vel.y = mJumpSpeed;
         mRigidBodyComponent->SetVelocity(vel);
         SetOffGround();
+    }
+
+    if (state[SDL_SCANCODE_SPACE]) {
+        HandleShooting();
     }
 }
 
@@ -86,6 +123,13 @@ void Mario::OnUpdate(float deltaTime)
         Kill();
     }
 
+    if (mShootCooldownTimer > 0.0f) {
+        mShootCooldownTimer -= deltaTime;
+    }
+    if (!mIsDead) {
+        HandleGlitches(deltaTime);
+    }
+
     ManageAnimations();
 
     float cameraLeft = GetGame()->GetCameraPos().x;
@@ -97,7 +141,59 @@ void Mario::OnUpdate(float deltaTime)
         v.x = 0.0f;
         mRigidBodyComponent->SetVelocity(v);
     }
+}
 
+void Mario::HandleGlitches(float deltaTime) {
+    if (mCurrentLevel == RepairLevel::Fixed) return;
+
+    // se travado conta tempo
+    if (mIsInputLocked) {
+        mGlitchDurationTimer -= deltaTime;
+        if (mGlitchDurationTimer <= 0.0f) {
+            mIsInputLocked = false;
+            SDL_Log("Sistema recuperado do Glitch.");
+        }
+        return;
+    }
+
+    // contagem regressiva p proximo glitch
+    mGlitchTimer -= deltaTime;
+    if (mGlitchTimer <= 0.0f) {
+        mIsInputLocked = true;
+        mGlitchDurationTimer = 1.0f; // 1s perda de controle
+        mGlitchTimer = mTimeBetweenGlitches; // reset
+
+        // zera vel horizontal
+        Vector2 vel = mRigidBodyComponent->GetVelocity();
+        vel.x = 0.0f;
+        mRigidBodyComponent->SetVelocity(vel);
+
+        SDL_Log("GLITCH: Input de movimento perdido!");
+    }
+}
+
+void Mario::HandleShooting() {
+    if (mShootCooldownTimer > 0.0f) return;
+
+    mShootCooldownTimer = mShootCooldown;
+
+    // vVerifica chance de falha
+    float roll = Random::GetFloat();
+    if (roll < mShootFailChance) {
+        SDL_Log("GLITCH: Arma falhou ao disparar!");
+        // TODO: som
+        return;
+    }
+
+    // disparo
+    float direction = mScale.x;
+    Bullet* bullet = new Bullet(GetGame(), direction);
+
+    Vector2 spawnPos = GetPosition();
+    spawnPos.y += 0;
+    spawnPos.x += (Game::TILE_SIZE / 2.0f) * direction;
+
+    bullet->SetPosition(spawnPos);
 }
 
 void Mario::ManageAnimations()
