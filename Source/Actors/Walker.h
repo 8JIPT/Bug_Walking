@@ -54,7 +54,8 @@ private:
     
     // Following behavior
     static constexpr float DETECTION_RANGE = 400.0f;
-    static constexpr float ATTACK_DIST = 80.0f;
+    static constexpr float ATTACK_DISTX = 80.0f;
+    static constexpr float ATTACK_DISTY = 288.0f;
     
     // Attack system
     float mAttackTimer;

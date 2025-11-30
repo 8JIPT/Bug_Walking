@@ -76,7 +76,7 @@ public:
     static const int LEVEL_WIDTH    = 30;
     static const int LEVEL_HEIGHT   = 90;
     static const int TILE_SIZE      = 32;
-    static const int SPAWN_DISTANCE = 700;
+    static const int SPAWN_DISTANCE = 400;
     static const int FPS = 60;
 
     static const int EPS = 2;

@@ -51,7 +51,7 @@
       }
     },
     {
-      "filename": "death2.png",
+      "filename": "damage2.png",
       "frame": {
         "x": 40,
         "y": 0,
@@ -101,7 +101,7 @@
       }
     },
     {
-      "filename": "death3.png",
+      "filename": "death2.png",
       "frame": {
         "x": 36,
         "y": 18,
@@ -126,11 +126,11 @@
       }
     },
     {
-      "filename": "3fire1.png",
+      "filename": "death3.png",
       "frame": {
         "x": 77,
         "y": 0,
-        "w": 36,
+        "w": 37,
         "h": 18
       },
       "rotated": false,
@@ -138,11 +138,11 @@
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 36,
+        "w": 37,
         "h": 18
       },
       "sourceSize": {
-        "w": 36,
+        "w": 37,
         "h": 18
       },
       "pivot": {
@@ -228,7 +228,7 @@
     {
       "filename": "3fire12.png",
       "frame": {
-        "x": 113,
+        "x": 114,
         "y": 0,
         "w": 36,
         "h": 18
@@ -353,7 +353,7 @@
     {
       "filename": "3fire4.png",
       "frame": {
-        "x": 149,
+        "x": 150,
         "y": 0,
         "w": 36,
         "h": 18
@@ -503,7 +503,7 @@
     {
       "filename": "3fire8.png",
       "frame": {
-        "x": 185,
+        "x": 186,
         "y": 0,
         "w": 36,
         "h": 18
@@ -576,7 +576,7 @@
       }
     },
     {
-      "filename": "back2.png",
+      "filename": "back1.png",
       "frame": {
         "x": 72,
         "y": 72,
@@ -601,7 +601,7 @@
       }
     },
     {
-      "filename": "back4.png",
+      "filename": "back2.png",
       "frame": {
         "x": 108,
         "y": 54,
@@ -626,7 +626,7 @@
       }
     },
     {
-      "filename": "death1.png",
+      "filename": "back4.png",
       "frame": {
         "x": 144,
         "y": 36,
@@ -651,7 +651,7 @@
       }
     },
     {
-      "filename": "death5.png",
+      "filename": "damage1.png",
       "frame": {
         "x": 181,
         "y": 18,
@@ -676,12 +676,12 @@
       }
     },
     {
-      "filename": "death6.png",
+      "filename": "death5.png",
       "frame": {
-        "x": 221,
+        "x": 222,
         "y": 0,
         "w": 36,
-        "h": 13
+        "h": 18
       },
       "rotated": false,
       "trimmed": false,
@@ -689,11 +689,11 @@
         "x": 0,
         "y": 0,
         "w": 36,
-        "h": 13
+        "h": 18
       },
       "sourceSize": {
         "w": 36,
-        "h": 13
+        "h": 18
       },
       "pivot": {
         "x": 0.5,
@@ -751,7 +751,7 @@
       }
     },
     {
-      "filename": "death7.png",
+      "filename": "death6.png",
       "frame": {
         "x": 72,
         "y": 90,
@@ -776,7 +776,7 @@
       }
     },
     {
-      "filename": "death8.png",
+      "filename": "death7.png",
       "frame": {
         "x": 108,
         "y": 72,
@@ -801,12 +801,12 @@
       }
     },
     {
-      "filename": "idle4.png",
+      "filename": "death8.png",
       "frame": {
         "x": 144,
         "y": 54,
         "w": 36,
-        "h": 18
+        "h": 13
       },
       "rotated": false,
       "trimmed": false,
@@ -814,11 +814,11 @@
         "x": 0,
         "y": 0,
         "w": 36,
-        "h": 18
+        "h": 13
       },
       "sourceSize": {
         "w": 36,
-        "h": 18
+        "h": 13
       },
       "pivot": {
         "x": 0.5,
@@ -826,10 +826,10 @@
       }
     },
     {
-      "filename": "back1.png",
+      "filename": "idle4.png",
       "frame": {
-        "x": 77,
-        "y": 0,
+        "x": 180,
+        "y": 36,
         "w": 36,
         "h": 18
       },
@@ -876,10 +876,35 @@
       }
     },
     {
+      "filename": "death1.png",
+      "frame": {
+        "x": 181,
+        "y": 18,
+        "w": 36,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 36,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 36,
+        "h": 18
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
       "filename": "idle1.png",
       "frame": {
-        "x": 144,
-        "y": 36,
+        "x": 181,
+        "y": 18,
         "w": 36,
         "h": 18
       },
@@ -907,7 +932,7 @@
     "image": "Chaser.png",
     "format": "RGBA8888",
     "size": {
-      "w": 257,
+      "w": 258,
       "h": 154
     },
     "scale": 1

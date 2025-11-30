@@ -18,20 +18,24 @@ Chaser::Chaser(Game* game, float moveSpeed, int maxHitPoints)
     , mHitPoints(maxHitPoints)
     , mDyingTimer(1.0f)
     , mIsDying(false)
+    , mDamageTimer(0.0f)
+    , mPreviousAnimation("move")
     , mOffsetDistance(100.0f)
     , mTargetPosition(Vector2::Zero)
     , mMode(ChaserMode::Following)
     , mCooldownTimer(0.0f)
     , mMissileFireTimer(0.0f)
     , mMissileFireRate(6.0f)
-    , mBattleMissileFireRate(0.5f)
+    , mBattleMissileFireRate(2.0f)
     , mLastPlayerPosition(Vector2::Zero)
 {
     // death frames: 0,2,4,25,26,27,30,31  | 3fire frames: 1,3,5,6,7,8,9,10,12,13,14,15,17,18,19,20 | forward frames: 11,15,16,21
     mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Chaser/Chaser.png", "../Assets/Sprites/Chaser/Chaser.json", Game::TILE_SIZE, Game::TILE_SIZE, 150);
-    mDrawComponent->AddAnimation("move", std::vector<int>{11, 15, 16, 21});
-    mDrawComponent->AddAnimation("battle", std::vector<int>{5, 12, 13, 14, 17, 18, 19, 20});
-    mDrawComponent->AddAnimation("dead", std::vector<int>{25,2, 4, 0,26,27,30,31});
+    mDrawComponent->AddAnimation("move",std::vector<int>{11, 15, 16, 21});
+    mDrawComponent->AddAnimation("battle",std::vector<int>{12, 13, 14, 17, 18, 19, 20, 22});
+    mDrawComponent->AddAnimation("damage",std::vector<int>{26, 2});
+    mDrawComponent->AddAnimation("dead",std::vector<int>{35,4, 5, 0, 27, 30, 31, 32});
+
     mDrawComponent->SetAnimFPS(8.0f);
     mDrawComponent->SetAnimation("move");
 
@@ -54,6 +58,16 @@ void Chaser::OnUpdate(float deltaTime)
             mState = ActorState::Destroy;
         }
         return;
+    }
+
+    if (mDamageTimer > 0.0f)
+    {
+        mDamageTimer -= deltaTime;
+        if (mDamageTimer <= 0.0f)
+        {
+            // Restore previous animation
+            mDrawComponent->SetAnimation(mPreviousAnimation);
+        }
     }
 
     switch (mMode)
@@ -195,6 +209,16 @@ void Chaser::TakeDamage(int damage)
     {
         Kill();
     }
+    else
+    {
+        if (mMode == ChaserMode::Following)
+            mPreviousAnimation = "move";
+        else if (mMode == ChaserMode::Battle)
+            mPreviousAnimation = "battle";
+        
+        mDamageTimer = 0.2f;
+        mDrawComponent->SetAnimation("damage");
+    }
 }
 
 void Chaser::Kill()
@@ -223,6 +247,13 @@ void Chaser::OnHorizontalCollision(const float minOverlap, AABBColliderComponent
         pos.x += minOverlap;
         SetPosition(pos);
         return;
+    }
+    if (other->GetLayer() == ColliderLayer::Player)
+    {
+        if (minOverlap < 0.0f)
+        {
+            TakeDamage(1);
+        }
     }
 }
 

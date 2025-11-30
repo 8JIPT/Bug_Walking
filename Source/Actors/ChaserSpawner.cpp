@@ -22,8 +22,8 @@ void ChaserSpawner::OnUpdate(float deltaTime)
     if (!player)
         return;
 
-    float dx = Math::Abs(player->GetPosition().x - GetPosition().x);
-    if (dx <= mSpawnDistance)
+    float dy = Math::Abs(player->GetPosition().y - GetPosition().y);
+    if (dy <= mSpawnDistance)
     {
         Chaser* chaser = new Chaser(GetGame());
         chaser->SetPosition(GetPosition());
