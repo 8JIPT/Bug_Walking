@@ -106,7 +106,7 @@ bool Game::Initialize()
 void Game::InitializeActors()
 {
     // Load and build level for playing scene
-    mLevelData = LoadLevel("../Assets/Levels/custom/custom.csv", LEVEL_WIDTH, LEVEL_HEIGHT);
+    mLevelData = LoadLevel("../Assets/Levels/level1/level1.csv", LEVEL_WIDTH, LEVEL_HEIGHT);
     if (mLevelData) BuildLevel(mLevelData, LEVEL_WIDTH, LEVEL_HEIGHT);
 }
 
@@ -169,7 +169,7 @@ void Game::SetScene(GameScene nextScene)
             mCameraLeftBoundary = 0.0f;
             
             // Initialize level and HUD
-            mLevelData = LoadLevel("../Assets/Levels/custom/custom.csv", LEVEL_WIDTH, LEVEL_HEIGHT);
+            mLevelData = LoadLevel("../Assets/Levels/level1/level1.csv", LEVEL_WIDTH, LEVEL_HEIGHT);
             if (mLevelData) BuildLevel(mLevelData, LEVEL_WIDTH, LEVEL_HEIGHT);
 
             mHUD = new HUD(this, "../Assets/Fonts/Arial.ttf");
@@ -196,8 +196,12 @@ void Game::SetScene(GameScene nextScene)
 int **Game::LoadLevel(const std::string& fileName, int width, int height)
 {
     int** level = new int*[height];
-    for (int i = 0; i < height; ++i)
+    for (int i = 0; i < height; ++i) {
         level[i] = new int[width];
+        for (int j = 0; j < width; ++j) {
+            level[i][j] = -1;
+        }
+    }
 
     std::ifstream file(fileName);
     if (!file.is_open()) {
@@ -210,7 +214,6 @@ int **Game::LoadLevel(const std::string& fileName, int width, int height)
         std::vector<int> tiles = CSVHelper::Split(line);
         for (int col = 0; col < width && col < tiles.size(); ++col){
             level[row][col] = tiles[col];
-            SDL_Log("Tile[%d][%d] = %d", row, col, level[row][col]);
         }
         ++row;
     }
@@ -218,100 +221,62 @@ int **Game::LoadLevel(const std::string& fileName, int width, int height)
     return level;
 }
 
-void Game::BuildLevel(int** levelData, int width, int height)
+TiledTileInfo Game::DecodeTiledID(uint32_t raw)
 {
+    const uint32_t FLIP_H = 0x80000000;
+    const uint32_t FLIP_V = 0x40000000;
+    const uint32_t FLIP_D = 0x20000000;
+    const uint32_t TILE_ID_MASK = 0x1FFFFFFF;
+
+    TiledTileInfo tile;
+
+    tile.flipH = (raw & FLIP_H) != 0;
+    tile.flipV = (raw & FLIP_V) != 0;
+    tile.flipD = (raw & FLIP_D) != 0;
+
+    // Obtain the real ID
+    tile.id = raw & TILE_ID_MASK;
+
+    return tile;
+}
+
+void Game::BuildLevel(int** levelData, int width, int height){
     for (int row = 0; row < height; ++row){
         for (int col = 0; col < width; ++col){
-            int tileID = levelData[row][col];
-
+            int rawID = levelData[row][col];
+            if (rawID == -1) continue;  // Empty tile
+            TiledTileInfo info;
+            info = DecodeTiledID(static_cast<uint32_t>(rawID));
+            Block* block = nullptr;
             Vector2 position(col * TILE_SIZE + TILE_SIZE * 0.5f, row * TILE_SIZE + TILE_SIZE * 0.5f);
-
-            switch (tileID){
-                case 0:{
-                    //block A
-                    Block* blockA = new Block(this, "../Assets/Sprites/Blocks/BlockA.png");
-                    blockA->SetPosition(position);
-                    break;
-                }
-                case 1:{
-                    //block C
-                    Block* blockC = new Block(this, "../Assets/Sprites/Blocks/BlockC.png");
-                    blockC->SetPosition(position);
-                    break;
-                }
-                case 2:{
-                    //block F (pipe top left)
-                    Block* blockF = new Block(this, "../Assets/Sprites/Blocks/BlockF.png");
-                    blockF->SetPosition(position);
-                    break;
-                }
-                case 4:{
-                    //block B
-                    Block* blockB = new Block(this, "../Assets/Sprites/Blocks/BlockB.png", true);
-                    blockB->SetPosition(position);
-                    break;
-                }
-                case 5:{
-                    //block E
-                    Block* blockE = new Block(this, "../Assets/Sprites/Blocks/BlockE.png");
-                    blockE->SetPosition(position);
-                    break;
-                }
-                case 6:{
-                    //block I (pipe bottom right)
-                    Block* blockI = new Block(this, "../Assets/Sprites/Blocks/BlockI.png");
-                    blockI->SetPosition(position);
-                    break;
-                }
-                case 8:{
-                    //block D
-                    Block* blockD = new Block(this, "../Assets/Sprites/Blocks/BlockD.png");
-                    blockD->SetPosition(position);
-                    break;
-                }
-                case 9:{
-                    //block H (pipe bottom left)
-                    Block* blockH = new Block(this, "../Assets/Sprites/Blocks/BlockH.png");
-                    blockH->SetPosition(position);
-                    break;
-                }
-                case 100:{
-                    //spawner goomba
-                    Spawner* spawnerG = new Spawner(this, SPAWN_DISTANCE);
-                    spawnerG->SetPosition(position);
-                    break;
-                }
-                case 120:{
-                    //block G (pipe top right)
-                    Block* blockG = new Block(this, "../Assets/Sprites/Blocks/BlockG.png");
-                    blockG->SetPosition(position);
-                    break;
-                }
-                case 13:{
-                    //Block(skin blockC) that if hit generates mushroom
-                    Block* MushroomBlock = new Block(this, "../Assets/Sprites/Blocks/BlockC.png", true, true);
-                    MushroomBlock->SetPosition(position);
-                    break;
-                }
-                case 12:{
-                    //spawner chaser (new steering enemy)
-                    //ChaserSpawner* spawnerC = new ChaserSpawner(this, SPAWN_DISTANCE);
-                    //spawnerC->SetPosition(position);
-                    break;
-                }
-                case 10:{
-                    //spawner walker (patrol and chase enemy)
-                    WalkerSpawner* spawnerW = new WalkerSpawner(this, position);
-                    break;
-                }
-                case 16:{
-                    //mario
+            std::string baseAddr = "../Assets/Sprites/Blocks";
+            switch (info.id){
+                case 222:{//Mario
                     mMario = new Mario(this);
                     mMario->SetPosition(position);
                     break;
                 }
-                default:
+                case 237: {//Chaser
+                    ChaserSpawner* spawnerC = new ChaserSpawner(this, SPAWN_DISTANCE);
+                    spawnerC->SetPosition(position);
                     break;
+                }
+                case 238: {//Walker
+                    WalkerSpawner* spawnerW = new WalkerSpawner(this, position);
+                    break;
+                }
+                default:
+                    // For regular tiles, use the CSV value directly for the filename
+                    std::string blockAddr = "/Free Industrial Zone Tileset/1 Tiles/IndustrialTile_";
+                    if (info.id < 10) blockAddr += "0" + std::to_string(info.id + 1) + ".png";
+                    else blockAddr += std::to_string(info.id + 1) + ".png";
+                    block = new Block(this, baseAddr + blockAddr);
+                    block->SetPosition(position);
+                    break;
+            }
+            if (block)
+            {
+                block->SetFlip(info.flipH, info.flipV, info.flipD);
             }
         }
     }

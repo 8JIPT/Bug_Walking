@@ -29,19 +29,19 @@ bool Texture::Load(const std::string &filePath)
 
     SDL_Surface* surface = IMG_Load(filePath.c_str());
     if (!surface){
-        SDL_Log("Load texture error: %s", &filePath);
+        SDL_Log("Load texture error: %s - %s", filePath.c_str(), IMG_GetError());
         return false;
     }
 
     mWidth = surface->w;
     mHeight = surface->h;
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    GLenum format = SDLFormatToGL(surface->format);
-    if (format == 0){
-        SDL_Log("Unsupported pixel format");
-        SDL_FreeSurface(surface);
+    // Convert surface to RGBA32 format for consistent handling
+    SDL_Surface* convertedSurface = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGBA32, 0);
+    SDL_FreeSurface(surface);
+    
+    if (!convertedSurface) {
+        SDL_Log("Failed to convert surface format: %s", SDL_GetError());
         return false;
     }
 
@@ -50,10 +50,12 @@ bool Texture::Load(const std::string &filePath)
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D,0, (format == GL_RGBA || format == GL_BGRA) ? GL_RGBA : GL_RGB, mWidth, mHeight, 0, format, GL_UNSIGNED_BYTE, surface->pixels);
+    
+    // Upload texture data in RGBA format
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, convertedSurface->pixels);
 
     glBindTexture(GL_TEXTURE_2D, 0);
-    SDL_FreeSurface(surface);
+    SDL_FreeSurface(convertedSurface);
 
     return true;
 }

@@ -54,3 +54,23 @@ void Block::OnUpdate(float deltaTime){
 
     mDrawComponent->SetOffset(Vector2(0.0f, -mBumpOffset));
 }
+
+void Block::SetFlip(bool flipH, bool flipV, bool flipD){
+    if (flipH) {
+        Vector2 scale = GetScale();
+        scale.x *= -1.0f;
+        SetScale(scale);
+    }
+    if (flipV) {
+        Vector2 scale = GetScale();
+        scale.y *= -1.0f;
+        SetScale(scale);
+    }
+    if (flipD) {
+        // Diagonal flip is equivalent to rotating 90 degrees counterclockwise
+        SetRotation(GetRotation() + Math::PiOver2);
+        Vector2 scale = GetScale();
+        scale.x *= -1.0f;
+        SetScale(scale);
+    }
+}

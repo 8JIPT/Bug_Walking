@@ -82,6 +82,7 @@ void AnimatorComponent::Draw(Renderer* renderer)
     }
 
     if (!mSpriteTexture){
+        SDL_Log("AnimatorComponent::Draw - No texture!");
         return;
     }
 

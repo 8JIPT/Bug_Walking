@@ -28,7 +28,7 @@ Chaser::Chaser(Game* game, float moveSpeed, int maxHitPoints)
     , mLastPlayerPosition(Vector2::Zero)
 {
     // death frames: 0,2,4,25,26,27,30,31  | 3fire frames: 1,3,5,6,7,8,9,10,12,13,14,15,17,18,19,20 | forward frames: 11,15,16,21
-    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Chaser/Chaser.png", "../Assets/Sprites/Chaser/Chaser.json", Game::TILE_SIZE, Game::TILE_SIZE, 100);
+    mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Chaser/Chaser.png", "../Assets/Sprites/Chaser/Chaser.json", Game::TILE_SIZE, Game::TILE_SIZE, 150);
     mDrawComponent->AddAnimation("move", std::vector<int>{11, 15, 16, 21});
     mDrawComponent->AddAnimation("battle", std::vector<int>{5, 12, 13, 14, 17, 18, 19, 20});
     mDrawComponent->AddAnimation("dead", std::vector<int>{25,2, 4, 0,26,27,30,31});

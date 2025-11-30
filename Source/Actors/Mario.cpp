@@ -81,18 +81,28 @@ void Mario::OnUpdate(float deltaTime)
 
     if (mRigidBodyComponent->GetVelocity().y != 0.0f) SetOffGround();
 
-    if (mPosition.y > Game::WINDOW_HEIGHT) {
+    if (mPosition.y > Game::LEVEL_HEIGHT * Game::TILE_SIZE) {
         PowerDown();
         Kill();
     }
 
     ManageAnimations();
 
-    float cameraLeft = GetGame()->GetCameraPos().x;
-
-    if (mPosition.x < cameraLeft){
-        mPosition.x = cameraLeft;
-
+    // Clamp Mario to level boundaries
+    float levelWidth = Game::LEVEL_WIDTH * Game::TILE_SIZE;
+    float halfTile = Game::TILE_SIZE * 0.5f;
+    
+    // Left boundary
+    if (mPosition.x < halfTile) {
+        mPosition.x = halfTile;
+        Vector2 v = mRigidBodyComponent->GetVelocity();
+        v.x = 0.0f;
+        mRigidBodyComponent->SetVelocity(v);
+    }
+    
+    // Right boundary
+    if (mPosition.x > levelWidth - halfTile) {
+        mPosition.x = levelWidth - halfTile;
         Vector2 v = mRigidBodyComponent->GetVelocity();
         v.x = 0.0f;
         mRigidBodyComponent->SetVelocity(v);

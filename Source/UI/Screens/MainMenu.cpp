@@ -13,7 +13,7 @@ MainMenu::MainMenu(class Game* game, const std::string& fontName)
         float centerY = mGame->WINDOW_HEIGHT / 2.0f;
 
         //logo
-        AddImage("../Assets/Logo.png", Vector2(centerX, centerY - 150.0f), 0.5f, 0.0f, 100);
+        AddImage("../Assets/Logo.png", Vector2(centerX, centerY - 170.0f), 0.5f, 0.0f, 100);
 
         //start button
         AddRect(Vector2(centerX, centerY), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));

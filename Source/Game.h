@@ -15,6 +15,13 @@
 #include "Renderer/Renderer.h"
 #include "AudioSystem.h"
 
+struct TiledTileInfo {
+    uint32_t id;       // real tile ID (-1 = empty)
+    bool flipH;        // horizontal flip
+    bool flipV;        // vertical flip
+    bool flipD;        // diagonal flip (used for rotation)
+};
+
 enum class GameScene
 {
     MainMenu,
@@ -47,6 +54,9 @@ public:
     AudioSystem* GetAudio() { return mAudio; }
     SoundHandle GetMusicHandle() const { return mMusicHandle; }
 
+    // Tiles Processing
+    TiledTileInfo DecodeTiledID(uint32_t raw);
+
     // Scene Handling
     void SetScene(GameScene scene);
     void UnloadScene();
@@ -61,10 +71,10 @@ public:
     class HUD* GetHUD() { return mHUD; }
     bool GetIsPaused() { return mIsPaused; }
 
-    static const int WINDOW_WIDTH   = 1024;
+    static const int WINDOW_WIDTH   = 960;
     static const int WINDOW_HEIGHT  = 768;
-    static const int LEVEL_WIDTH    = 215;
-    static const int LEVEL_HEIGHT   = 15;
+    static const int LEVEL_WIDTH    = 30;
+    static const int LEVEL_HEIGHT   = 90;
     static const int TILE_SIZE      = 32;
     static const int SPAWN_DISTANCE = 700;
     static const int FPS = 60;

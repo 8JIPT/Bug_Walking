@@ -13,6 +13,7 @@ public:
 
     void Kill() override;
     void OnUpdate(float deltaTime);
+    void SetFlip(bool flipH, bool flipV, bool flipD);
     bool GetCanBeBumped() const {return mCanBeBumped;}
 private:
     Vector2 mStartPos;
