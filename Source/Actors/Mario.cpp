@@ -95,10 +95,12 @@ void Mario::OnProcessInput(const uint8_t* state)
         vel.y = mJumpSpeed;
         mRigidBodyComponent->SetVelocity(vel);
         SetOffGround();
+        GetGame()->PlayJumpChunk();
     }
 
     if (state[SDL_SCANCODE_X]) {
         HandleShooting();
+        GetGame()->PlayShootChunk();
     }
 }
 

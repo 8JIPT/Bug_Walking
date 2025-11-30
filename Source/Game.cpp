@@ -95,6 +95,8 @@ bool Game::Initialize()
 
     mAudio = new AudioSystem();
 
+    LoadSounds();
+
     // Start with main menu scene
     SetScene(GameScene::MainMenu);
 
@@ -280,6 +282,34 @@ void Game::BuildLevel(int** levelData, int width, int height){
             }
         }
     }
+}
+
+void Game::LoadSounds() {
+
+    mDeadChunk       = Mix_LoadWAV("../Assets/Sounds/Dead.wav");
+    mJumpChunk       = Mix_LoadWAV("../Assets/Sounds/Jump.wav");
+    mShootChunk   = Mix_LoadWAV("../Assets/Sounds/Laser_Shoot.wav");
+    mStageClearChunk = Mix_LoadWAV("../Assets/Sounds/StageClear.wav");
+}
+
+void Game::PlayDeadChunk() {
+
+
+}
+
+void Game::PlayJumpChunk() const {
+
+    Mix_PlayChannel(-1, mJumpChunk, 0);
+}
+
+void Game::PlayShootChunk() const {
+
+    Mix_PlayChannel(-1, mShootChunk, 0);
+}
+
+void Game::PlayStageClearChunk() {
+
+
 }
 
 void Game::RunLoop()
@@ -588,6 +618,13 @@ void Game::Shutdown()
         SDL_DestroyWindow(mWindow);
         mWindow = nullptr;
     }
+
+    Mix_FreeChunk(mDeadChunk);
+    Mix_FreeChunk(mJumpChunk);
+    Mix_FreeChunk(mShootChunk);
+    Mix_FreeChunk(mStageClearChunk);
+
+    Mix_CloseAudio();
 
     SDL_Quit();
 }
