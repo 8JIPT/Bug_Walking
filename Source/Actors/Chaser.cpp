@@ -4,7 +4,7 @@
 
 #include "Chaser.h"
 #include "../Game.h"
-#include "Mario.h"
+#include "Robot.h"
 #include "Missile.h"
 #include "../Random.h"
 #include "../Components/Drawing/AnimatorComponent.h"
@@ -72,7 +72,7 @@ void Chaser::OnUpdate(float deltaTime)
 
 void Chaser::UpdateSteering(float deltaTime)
 {
-    Mario* player = GetGame()->GetPlayer();
+    Robot* player = GetGame()->GetPlayer();
     if (!player)
         return;
 
@@ -121,7 +121,7 @@ void Chaser::UpdateSteering(float deltaTime)
 
 void Chaser::UpdateBattle(float deltaTime)
 {
-    Mario* player = GetGame()->GetPlayer();
+    Robot* player = GetGame()->GetPlayer();
     if (!player)
         return;
 
@@ -159,7 +159,7 @@ void Chaser::UpdateCooldown(float deltaTime)
 
 bool Chaser::HasPlayerMoved()
 {
-    Mario* player = GetGame()->GetPlayer();
+    Robot* player = GetGame()->GetPlayer();
     if (!player)
         return false;
 
@@ -173,7 +173,7 @@ bool Chaser::HasPlayerMoved()
 
 Vector2 Chaser::CalculateTargetPosition()
 {
-    Mario* player = GetGame()->GetPlayer();
+    Robot* player = GetGame()->GetPlayer();
     if (!player)
         return mPosition;
 

@@ -96,6 +96,7 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Walker.h
         Source/Actors/WalkerSpawner.cpp
         Source/Actors/WalkerSpawner.h
+        Source/Actors/Robot.cpp
 )
 
 # Incluir diretórios de terceiros (GLEW/SDL2)

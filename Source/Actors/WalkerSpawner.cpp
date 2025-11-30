@@ -4,7 +4,7 @@
 
 #include "WalkerSpawner.h"
 #include "Walker.h"
-#include "Mario.h"
+#include "Robot.h"
 #include "../Game.h"
 
 WalkerSpawner::WalkerSpawner(Game* game, const Vector2& position)
@@ -19,7 +19,7 @@ void WalkerSpawner::OnUpdate(float deltaTime)
     if (mHasSpawned)
         return;
 
-    Mario* player = GetGame()->GetPlayer();
+    Robot* player = GetGame()->GetPlayer();
     if (!player)
         return;
 

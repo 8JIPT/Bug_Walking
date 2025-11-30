@@ -19,7 +19,7 @@
 #include "Actors/Block.h"
 #include "Actors/Goomba.h"
 #include "Actors/Spawner.h"
-#include "Actors/Mario.h"
+#include "Actors/Robot.h"
 #include "Actors/Mushroom.h"
 #include "Actors/Chaser.h"
 #include "Actors/ChaserSpawner.h"
@@ -40,7 +40,7 @@ Game::Game()
         ,mIsDebugging(false)
         ,mUpdatingActors(false)
         ,mCameraPos(Vector2::Zero)
-        ,mMario(nullptr)
+        ,mRobot(nullptr)
         ,mAudio(nullptr)
         ,mHUD(nullptr)
         ,mLevelData(nullptr)
@@ -144,7 +144,7 @@ void Game::UnloadScene()
     }
 
     // Reset pointers
-    mMario = nullptr;
+    mRobot = nullptr;
     // HUD already deleted in the UI stack loop above
     mHUD = nullptr;
 }
@@ -254,8 +254,8 @@ void Game::BuildLevel(int** levelData, int width, int height){
             std::string baseAddr = "../Assets/Sprites/Blocks";
             switch (info.id){
                 case 222:{//Mario
-                    mMario = new Mario(this);
-                    mMario->SetPosition(position);
+                    mRobot = new Robot(this);
+                    mRobot->SetPosition(position);
                     break;
                 }
                 case 237: {//Chaser
@@ -351,7 +351,7 @@ void Game::ProcessInput()
             case SDL_KEYDOWN:
                 if (!event.key.repeat){
                     // Check for pause menu toggle first (only if in-game with only HUD)
-                    if (event.key.keysym.sym == SDLK_RETURN && mMario != nullptr){
+                    if (event.key.keysym.sym == SDLK_RETURN && mRobot != nullptr){
                         bool onlyHUD = true;
                         for (auto* ui : mUIStack) {
                             if (dynamic_cast<HUD*>(ui) == nullptr) {
@@ -392,7 +392,7 @@ void Game::UpdateGame(float deltaTime)
         if (mAudio) mAudio->Update(deltaTime);
 
         // Check if Mario is dead
-        if (mMario && mMario->IsDead()) {
+        if (mRobot && mRobot->IsDead()) {
             SetScene(GameScene::GameOver);
             return;
         }
@@ -457,15 +457,15 @@ void Game::UpdateActors(float deltaTime)
 
 void Game::UpdateCamera()
 {
-    if (!mMario) {
+    if (!mRobot) {
         return;
     }
 
-    float marioX = mMario->GetPosition().x;
-    float marioY = mMario->GetPosition().y;
+    float robotX = mRobot->GetPosition().x;
+    float robotY = mRobot->GetPosition().y;
 
-    float targetX = marioX - WINDOW_WIDTH / 2.0f + TILE_SIZE / 2.0f;
-    float targetY = marioY - WINDOW_HEIGHT / 2.0f + TILE_SIZE / 2.0f;
+    float targetX = robotX - WINDOW_WIDTH / 2.0f + TILE_SIZE / 2.0f;
+    float targetY = robotY - WINDOW_HEIGHT / 2.0f + TILE_SIZE / 2.0f;
 
     if (targetX > mCameraLeftBoundary)
         mCameraLeftBoundary = targetX;
@@ -548,7 +548,7 @@ void Game::GenerateOutput()
     mRenderer->Clear();
 
     //background drawing (only when in gameplay)
-    if (mMario) {
+    if (mRobot) {
         Texture* bgTexture = mRenderer->GetTexture("../Assets/Sprites/Background.png");
         if (bgTexture){
             Vector2 size(LEVEL_WIDTH * TILE_SIZE, LEVEL_HEIGHT * TILE_SIZE);

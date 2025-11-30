@@ -14,6 +14,7 @@
 #include <vector>
 #include "Renderer/Renderer.h"
 #include "AudioSystem.h"
+#include "Actors/Robot.h"
 
 struct TiledTileInfo {
     uint32_t id;       // real tile ID (-1 = empty)
@@ -67,7 +68,7 @@ public:
     class Renderer* GetRenderer() { return mRenderer; }
 
     // Getters
-    class Mario* GetPlayer() { return mMario; }
+    class Robot* GetPlayer() { return mRobot; }
     class HUD* GetHUD() { return mHUD; }
     bool GetIsPaused() { return mIsPaused; }
 
@@ -159,7 +160,7 @@ private:
     float mCameraLeftBoundary = 0.0f;
 
     // Game-specific
-    class Mario *mMario;
+    class Robot *mRobot;
     class HUD *mHUD;
     int **mLevelData;
 };

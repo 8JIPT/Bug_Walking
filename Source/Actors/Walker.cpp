@@ -4,11 +4,11 @@
 
 #include "Walker.h"
 #include "../Game.h"
-#include "Mario.h"
 #include "../Random.h"
 #include "../Components/Drawing/AnimatorComponent.h"
 #include "../Components/Physics/RigidBodyComponent.h"
 #include "../Components/Physics/AABBColliderComponent.h"
+#include "Robot.h"
 
 Walker::Walker(Game* game, const Vector2& spawnPosition, float moveSpeed, int maxHitPoints)
     : Actor(game)
@@ -151,7 +151,7 @@ void Walker::UpdateIdle(float deltaTime)
 
 void Walker::UpdateFollowing(float deltaTime)
 {
-    Mario* player = GetGame()->GetPlayer();
+    Robot* player = GetGame()->GetPlayer();
     if (!player)
     {
         mMode = WalkerMode::Idle;
@@ -206,7 +206,7 @@ void Walker::UpdateFollowing(float deltaTime)
 
 void Walker::UpdateBattle(float deltaTime)
 {
-    Mario* player = GetGame()->GetPlayer();
+    Robot* player = GetGame()->GetPlayer();
     if (!player)
     {
         mMode = WalkerMode::Idle;
@@ -331,7 +331,7 @@ void Walker::UpdateBattle(float deltaTime)
 
 bool Walker::CanSeePlayer()
 {
-    Mario* player = GetGame()->GetPlayer();
+    Robot* player = GetGame()->GetPlayer();
     if (!player)
         return false;
 

@@ -5,6 +5,7 @@
 #include "Missile.h"
 #include "../Game.h"
 #include "Mario.h"
+#include "Robot.h"
 #include "../Components/Drawing/AnimatorComponent.h"
 #include "../Components/ParticleSystemComponent.h"
 #include "../Components/Physics/RigidBodyComponent.h"
@@ -49,7 +50,7 @@ void Missile::OnUpdate(float deltaTime)
 
 void Missile::UpdateSteering(float deltaTime)
 {
-    Mario* player = GetGame()->GetPlayer();
+    Robot* player = GetGame()->GetPlayer();
     if (!player)
         return;
     

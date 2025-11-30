@@ -6,7 +6,7 @@
 
 #include "PauseMenu.h"
 #include "../../Game.h"
-#include "../../Actors/Mario.h"
+#include "../../Actors/Robot.h"
 #include "CrossFadeScreen.h"
 
 PauseMenu::PauseMenu(class Game* game, const std::string& fontName)
@@ -21,7 +21,7 @@ PauseMenu::PauseMenu(class Game* game, const std::string& fontName)
     //AddRect(Vector2(centerX, centerY), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));
     UIButton* resumeButton = AddButton("Resume", [this]() {
         AudioSystem* audio = mGame->GetAudio();
-        Mario* mario = mGame->GetPlayer();
+        Robot* robot = mGame->GetPlayer();
         audio->ResumeSound(mGame->GetMusicHandle());
         mGame->SetIsPaused(false);
         this->Close();

@@ -4,7 +4,7 @@
 
 #include "ChaserSpawner.h"
 #include "../Game.h"
-#include "Mario.h"
+#include "Robot.h"
 #include "Chaser.h"
 
 ChaserSpawner::ChaserSpawner(Game* game, float spawnDistance)
@@ -18,7 +18,7 @@ void ChaserSpawner::OnUpdate(float deltaTime)
     if (mState == ActorState::Destroy)
         return;
 
-    Mario* player = GetGame()->GetPlayer();
+    Robot* player = GetGame()->GetPlayer();
     if (!player)
         return;
 

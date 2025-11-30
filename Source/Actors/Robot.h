@@ -1,15 +1,12 @@
-//
-// Created by Lucas N. Ferreira on 08/09/23.
-//
-
+// Robot.h
 #pragma once
 #include "Actor.h"
 #include "RepairLevel.h"
 
-class Mario : public Actor
+class Robot : public Actor
 {
 public:
-    explicit Mario(Game* game, float forwardSpeed = 1500.0f, float jumpSpeed = -750.0f);
+    explicit Robot(Game* game, float forwardSpeed = 1200.0f, float jumpSpeed = -900.0f);
 
     void OnProcessInput(const Uint8* keyState) override;
     void OnUpdate(float deltaTime) override;
@@ -18,31 +15,22 @@ public:
     void OnVerticalCollision(const float minOverlap, AABBColliderComponent* other) override;
 
     void Kill() override;
-
-    void PowerUp();
-    void PowerDown();
-
-    bool IsDead(){ return mIsDead;}
+    bool IsDead() { return mIsDead; }
 
     void SetRepairLevel(RepairLevel level);
 
 private:
     void ManageAnimations();
+
     float mForwardSpeed;
     float mJumpSpeed;
     bool mIsRunning;
     bool mIsDead;
 
-    bool mIsSuper = false;
+    // Glitch/tiro
     bool mHitThisFrame = false;
     float mHitTimer = 0.0f;
     const float HIT_COOLDOWN = 0.5f;
-
-    class RigidBodyComponent* mRigidBodyComponent;
-    class AnimatorComponent* mNormalDraw;
-    class AnimatorComponent* mSuperDraw;
-    class AABBColliderComponent* mColliderComponent;
-    class ParticleSystemComponent* mFireBalls;
 
     float mFireBallCooldown = 0.3f;
 
@@ -60,4 +48,8 @@ private:
     float mGlitchTimer;
     float mGlitchDurationTimer;
     bool mIsInputLocked;
+
+    class RigidBodyComponent* mRigidBodyComponent;
+    class AnimatorComponent* mNormalDraw;
+    class AABBColliderComponent* mColliderComponent;
 };

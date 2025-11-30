@@ -1,0 +1,173 @@
+{
+  "frames": [
+    {
+      "filename": "idle_0",
+      "frame": { "x": 0, "y": 0, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "idle_1",
+      "frame": { "x": 40, "y": 0, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "idle_2",
+      "frame": { "x": 80, "y": 0, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "idle_3",
+      "frame": { "x": 120, "y": 0, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "idle_4",
+      "frame": { "x": 160, "y": 0, "w": 40, "h": 40 }
+    },
+
+    {
+      "filename": "run_0",
+      "frame": { "x": 0, "y": 40, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "run_1",
+      "frame": { "x": 40, "y": 40, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "run_2",
+      "frame": { "x": 80, "y": 40, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "run_3",
+      "frame": { "x": 120, "y": 40, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "run_4",
+      "frame": { "x": 160, "y": 40, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "run_5",
+      "frame": { "x": 200, "y": 40, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "run_6",
+      "frame": { "x": 240, "y": 40, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "run_7",
+      "frame": { "x": 280, "y": 40, "w": 40, "h": 40 }
+    },
+
+    {
+      "filename": "shot_0",
+      "frame": { "x": 0, "y": 80, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "shot_1",
+      "frame": { "x": 40, "y": 80, "w": 40, "h": 40 }
+    },
+
+    {
+      "filename": "dead_0",
+      "frame": { "x": 0, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_1",
+      "frame": { "x": 40, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_2",
+      "frame": { "x": 80, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_3",
+      "frame": { "x": 120, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_4",
+      "frame": { "x": 160, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_5",
+      "frame": { "x": 200, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_6",
+      "frame": { "x": 240, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_7",
+      "frame": { "x": 280, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_8",
+      "frame": { "x": 320, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_9",
+      "frame": { "x": 360, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_10",
+      "frame": { "x": 400, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_11",
+      "frame": { "x": 440, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_12",
+      "frame": { "x": 480, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_13",
+      "frame": { "x": 520, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_14",
+      "frame": { "x": 560, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_15",
+      "frame": { "x": 600, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_16",
+      "frame": { "x": 640, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_17",
+      "frame": { "x": 680, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_18",
+      "frame": { "x": 720, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_19",
+      "frame": { "x": 760, "y": 120, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "dead_20",
+      "frame": { "x": 800, "y": 120, "w": 40, "h": 40 }
+    },
+
+    {
+      "filename": "jump_0",
+      "frame": { "x": 0, "y": 160, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "jump_1",
+      "frame": { "x": 40, "y": 160, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "jump_2",
+      "frame": { "x": 80, "y": 160, "w": 40, "h": 40 }
+    },
+    {
+      "filename": "jump_3",
+      "frame": { "x": 120, "y": 160, "w": 40, "h": 40 }
+    }
+  ],
+  "meta": {
+    "image": "Character_SpriteSheet_RP1_free (40x40).png",
+    "size": { "w": 840, "h": 200 },
+    "tile": 40
+  }
+}
