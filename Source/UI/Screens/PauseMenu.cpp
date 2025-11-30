@@ -18,7 +18,7 @@ PauseMenu::PauseMenu(class Game* game, const std::string& fontName)
     AddText("PAUSED", Vector2(centerX, centerY - 150.0f), 1.0f, 0.0f, 48);
 
     // resume button
-    AddRect(Vector2(centerX, centerY), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+    //AddRect(Vector2(centerX, centerY), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));
     UIButton* resumeButton = AddButton("Resume", [this]() {
         AudioSystem* audio = mGame->GetAudio();
         Mario* mario = mGame->GetPlayer();
@@ -29,7 +29,7 @@ PauseMenu::PauseMenu(class Game* game, const std::string& fontName)
     resumeButton->SetTextColor(Color::White);
 
     // Main Menu Button
-    AddRect(Vector2(centerX, centerY + 100.0f), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+    //AddRect(Vector2(centerX, centerY + 100.0f), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));
     UIButton* menuButton = AddButton("Main Menu", [this]() {
         mGame->SetIsPaused(false);
         new CrossFadeScreen(mGame, GameScene::MainMenu);

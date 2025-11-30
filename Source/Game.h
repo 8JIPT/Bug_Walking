@@ -93,7 +93,16 @@ public:
 
     // Camera functions
     Vector2& GetCameraPos() { return mCameraPos; };
-    void SetCameraPos(const Vector2& position) { mCameraPos = position; };
+    void SetCameraPos(const Vector2& position) {
+        mCameraPos = position;
+        };
+
+    void LoadSounds();
+
+    void PlayDeadChunk();
+    void PlayJumpChunk() const;
+    void PlayShootChunk() const;
+    void PlayStageClearChunk();
 
 private:
     void ProcessInput();
@@ -129,6 +138,14 @@ private:
     // Audio system
     AudioSystem* mAudio;
     SoundHandle mMusicHandle;
+
+    //Mix_Chunk *mBumpChunk;
+    //Mix_Chunk *mCoinChunk;
+    Mix_Chunk *mDeadChunk;
+    Mix_Chunk *mJumpChunk;
+    Mix_Chunk *mShootChunk;
+    //Mix_Chunk *mPowerUpChunk;
+    Mix_Chunk *mStageClearChunk;
 
     // Track elapsed time since game start
     Uint32 mTicksCount;
