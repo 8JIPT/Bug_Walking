@@ -20,7 +20,7 @@ Robot::Robot(Game* game, const float forwardSpeed, const float jumpSpeed)
         , mIsInputLocked(false)
 {
     mNormalDraw = new AnimatorComponent(this, "../Assets/Sprites/Robot/Character_SpriteSheet_RP1_free (40x40).png", "../Assets/Sprites/Robot/Robot.json", Game::TILE_SIZE * 2, Game::TILE_SIZE * 2, 100);
-    mNormalDraw->SetOffset(Vector2(0, -Game::TILE_SIZE / 2));
+    mNormalDraw->SetOffset(Vector2(0, Game::TILE_SIZE * -0.4));
     // idle: frames 0-4
     mNormalDraw->AddAnimation("idle", std::vector<int>{0,1,2,3,4});
     // run: frames 5-12
@@ -35,7 +35,7 @@ Robot::Robot(Game* game, const float forwardSpeed, const float jumpSpeed)
     mNormalDraw->SetAnimation("idle");
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
-    mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::TILE_SIZE, Game::TILE_SIZE, ColliderLayer::Player, false);
+    mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::TILE_SIZE * 0.8, Game::TILE_SIZE * 1.3, ColliderLayer::Player, false);
 
     SetRepairLevel(RepairLevel::Critical);
 }
