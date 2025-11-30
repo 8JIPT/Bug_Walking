@@ -17,6 +17,7 @@ public:
     ~UIImage();
 
     void Draw(class Shader* shader) override;
+    void SetTexture(class Texture* texture) { mTexture = texture; }
 
 protected:
     class Texture* mTexture;

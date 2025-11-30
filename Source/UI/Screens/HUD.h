@@ -15,12 +15,21 @@ public:
 
     void SetHealth(int health);
     void SetScore(int score);
+    void Update(float deltaTime) override;
 
 private:
+    void UpdateHeartAnimation(float deltaTime);
 
     // HUD elements
-    UIImage *mHealth1;
-    UIImage *mHealth2;
-    UIImage *mHealth3;
+    UIImage* mHeart1;
+    UIImage* mHeart2;
+    UIImage* mHeart3;
     UIText  *mScore;
+    
+    int mCurrentHealth;
+    int mPreviousHealth;
+    float mHeartAnimTimer;
+    bool mIsAnimatingHeart;
+    int mAnimatingHeartIndex;
+    int mCurrentHeartFrame;  // For animation: 0=full, 4=empty
 };
