@@ -175,6 +175,10 @@ void Game::SetScene(GameScene nextScene)
             if (mLevelData) BuildLevel(mLevelData, LEVEL_WIDTH, LEVEL_HEIGHT);
 
             mHUD = new HUD(this, "../Assets/Fonts/Arial.ttf");
+            if (mRobot && mHUD)
+            {
+                mHUD->SetHealth(mRobot->GetHitPoints());
+            }
             break;
         }
         case GameScene::PauseMenu: {

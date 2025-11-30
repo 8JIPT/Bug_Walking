@@ -1,6 +1,7 @@
 // Robot.cpp
 #include "Robot.h"
 #include "../Game.h"
+#include "../UI/Screens/HUD.h"
 #include "../Components/Drawing/AnimatorComponent.h"
 #include "../Components/Physics/RigidBodyComponent.h"
 #include "../Components/Physics/AABBColliderComponent.h"
@@ -182,6 +183,33 @@ void Robot::ManageAnimations()
     }
 }
 
+void Robot::TakeDamage(int damage)
+{
+    if (mIsDead || mHitTimer > 0.0f)
+        return;
+
+    mHitPoints -= damage;
+    SDL_Log("Robot took %d damage! HP: %d/%d", damage, mHitPoints, mMaxHitPoints);
+
+    // Update HUD
+    if (GetGame()->GetHUD())
+    {
+        GetGame()->GetHUD()->SetHealth(mHitPoints);
+    }
+
+    if (mHitPoints <= 0)
+    {
+        mHitPoints = 0;
+        Kill();
+    }
+    else
+    {
+        // Start invincibility frames
+        mHitTimer = HIT_COOLDOWN;
+        mHitThisFrame = true;
+    }
+}
+
 void Robot::Kill()
 {
     if (mIsDead) return;
@@ -204,8 +232,7 @@ void Robot::OnHorizontalCollision(const float minOverlap, AABBColliderComponent*
                 SDL_Log("Robot killed Missile on horizontal collision");
             }
         }
-        Kill();
-        mHitTimer = HIT_COOLDOWN;
+        TakeDamage(1);
     }
     if (other->GetLayer() == ColliderLayer::Item){
         // PowerUp(); // Se quiser implementar powerup para Robot
@@ -252,7 +279,6 @@ void Robot::OnVerticalCollision(const float minOverlap, AABBColliderComponent* o
                 SDL_Log("Robot killed Missile on vertical collision");
             }
         }
-        Kill();
-        mHitTimer = HIT_COOLDOWN;
+        TakeDamage(1);
     }
 }

@@ -18,6 +18,9 @@ public:
     bool IsDead() { return mIsDead; }
 
     void SetRepairLevel(RepairLevel level);
+    void TakeDamage(int damage = 1) override;
+    int GetHitPoints() const { return mHitPoints; }
+    int GetMaxHitPoints() const { return mMaxHitPoints; }
 
 private:
     void ManageAnimations();
@@ -27,10 +30,13 @@ private:
     bool mIsRunning;
     bool mIsDead;
 
-    // Glitch/tiro
+    // Glitch / damage
     bool mHitThisFrame = false;
-    float mHitTimer = 0.0f;
-    const float HIT_COOLDOWN = 0.5f;
+    float mHitTimer = 0.0f; // used for invincibility frames (seconds)
+    const float HIT_COOLDOWN = 1.5f; // invincibility duration after taking damage
+
+    int mHitPoints = 3;
+    int mMaxHitPoints = 3;
 
     float mFireBallCooldown = 0.3f;
 
