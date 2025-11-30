@@ -159,7 +159,7 @@ void Game::SetScene(GameScene nextScene)
             auto* menu = new MainMenu(this, "../Assets/Fonts/Arial.ttf");
             // Start music if not already playing
             if (mMusicHandle == SoundHandle::Invalid || mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
-                mMusicHandle = mAudio->PlaySound("Music.ogg", true);
+                mMusicHandle = mAudio->PlaySound("Music-1.ogg", true);
             }
             break;
         }
