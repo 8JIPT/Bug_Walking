@@ -5,6 +5,12 @@
 #pragma once
 #include "Actor.h"
 
+enum class RepairLevel {
+    Critical = 1,
+    Damaged = 2,
+    Fixed = 3
+};
+
 class Mario : public Actor
 {
 public:
@@ -22,6 +28,8 @@ public:
     void PowerDown();
 
     bool IsDead(){ return mIsDead;}
+
+    void SetRepairLevel(RepairLevel level);
 
 private:
     void ManageAnimations();
@@ -42,4 +50,19 @@ private:
     class ParticleSystemComponent* mFireBalls;
 
     float mFireBallCooldown = 0.3f;
+
+    void HandleShooting();
+    void HandleGlitches(float deltaTime);
+
+    RepairLevel mCurrentLevel;
+
+    float mShootCooldown;
+    float mShootCooldownTimer;
+
+    float mTimeBetweenGlitches;
+    float mShootFailChance;
+
+    float mGlitchTimer;
+    float mGlitchDurationTimer;
+    bool mIsInputLocked;
 };
