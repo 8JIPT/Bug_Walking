@@ -95,6 +95,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Walker.h
         Source/Actors/WalkerSpawner.cpp
         Source/Actors/WalkerSpawner.h
+        Source/Actors/Robot.h
+        Source/Actors/Robot.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${GLEW_ROOT}/include ${SDL2_INCLUDE_DIRS})
