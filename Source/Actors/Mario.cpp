@@ -79,25 +79,25 @@ void Mario::OnProcessInput(const uint8_t* state)
         return;
     }
 
-    if (state[SDL_SCANCODE_D]){
+    if (state[SDL_SCANCODE_RIGHT]){
         mRigidBodyComponent->ApplyForce(Vector2(mForwardSpeed, 0.0f));
         mScale.x = 1.0f;
         mIsRunning = true;
     }
-    else if (state[SDL_SCANCODE_A]){
+    else if (state[SDL_SCANCODE_LEFT]){
         mRigidBodyComponent->ApplyForce(Vector2(-mForwardSpeed, 0.0f));
         mScale.x = -1.0f;
         mIsRunning = true;
     }
 
-    if (state[SDL_SCANCODE_W] && IsOnGround()){
+    if (state[SDL_SCANCODE_SPACE] && IsOnGround()){
         Vector2 vel = mRigidBodyComponent->GetVelocity();
         vel.y = mJumpSpeed;
         mRigidBodyComponent->SetVelocity(vel);
         SetOffGround();
     }
 
-    if (state[SDL_SCANCODE_SPACE]) {
+    if (state[SDL_SCANCODE_X]) {
         HandleShooting();
     }
 }

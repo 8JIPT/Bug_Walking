@@ -12,11 +12,14 @@ MainMenu::MainMenu(class Game* game, const std::string& fontName)
         float centerX = mGame->WINDOW_WIDTH / 2.0f;
         float centerY = mGame->WINDOW_HEIGHT / 2.0f;
 
+        //background
+        AddImage("../Assets/Background.png", Vector2(centerX, centerY - 170.0f), 4.4f, 0.0f, 10);
+
         //logo
         AddImage("../Assets/Logo.png", Vector2(centerX, centerY - 170.0f), 0.5f, 0.0f, 100);
 
         //start button
-        AddRect(Vector2(centerX, centerY), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+        //AddRect(Vector2(centerX, centerY), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));
         UIButton* startButton = AddButton("Start Game", [game = mGame, this](){
             this->Close();
             new CrossFadeScreen(game, GameScene::Level1);
@@ -24,7 +27,7 @@ MainMenu::MainMenu(class Game* game, const std::string& fontName)
         startButton->SetTextColor(Color::White);
 
         //quit button
-        AddRect(Vector2(centerX, centerY + 100.0f), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+        //AddRect(Vector2(centerX, centerY + 100.0f), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));
         UIButton* quitButton = AddButton("Quit",[game = mGame](){game->Quit();}, Vector2(centerX, centerY + 100.0f), 1.0f, 0.0f, 32, 300, 110);
         quitButton->SetTextColor(Color::White);
 }
