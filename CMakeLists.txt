@@ -84,6 +84,8 @@ add_executable(${PROJECT_NAME}
         Source/Components/Drawing/RectComponent.h
         Source/Actors/Mushroom.cpp
         Source/Actors/Mushroom.h
+        Source/Actors/Bullet.cpp
+        Source/Actors/Bullet.h
         Source/Actors/Chaser.cpp
         Source/Actors/Chaser.h
         Source/Actors/ChaserSpawner.cpp
