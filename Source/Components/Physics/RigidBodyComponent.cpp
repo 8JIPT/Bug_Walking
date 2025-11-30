@@ -19,6 +19,7 @@ RigidBodyComponent::RigidBodyComponent(class Actor* owner, float mass, float fri
         ,mFrictionCoefficient(friction)
         ,mVelocity(Vector2::Zero)
         ,mAcceleration(Vector2::Zero)
+        , mGravityScale(1.0f)
 {
 
 }
@@ -33,7 +34,7 @@ void RigidBodyComponent::Update(float deltaTime)
     // Apply gravity acceleration
     if(mApplyGravity)
     {
-        ApplyForce(Vector2::UnitY * GRAVITY);
+        ApplyForce(Vector2::UnitY * GRAVITY * mGravityScale);
     }
 
     // Apply friction

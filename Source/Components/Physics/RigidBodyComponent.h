@@ -25,6 +25,8 @@ public:
 
     void ApplyForce(const Vector2 &force);
 
+    void SetGravityScale(float scale) { mGravityScale = scale; }
+
 private:
     bool mApplyGravity;
 
@@ -34,4 +36,6 @@ private:
 
     Vector2 mVelocity;
     Vector2 mAcceleration;
+
+    float mGravityScale;
 };

@@ -12,6 +12,7 @@ public:
 private:
     class AABBColliderComponent* mCollider;
     class RectComponent* mRect;
+    class RigidBodyComponent* mRigidBody;
     float mSpeed;
     float mLiveTime;
 };
