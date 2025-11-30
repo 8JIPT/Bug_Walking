@@ -56,11 +56,11 @@ void Mario::SetRepairLevel(RepairLevel level) {
     switch (level) {
     case RepairLevel::Critical:
         mTimeBetweenGlitches = 10.0f;
-        mShootFailChance = 0.50f;
+        mShootFailChance = 0.20f;
         break;
     case RepairLevel::Damaged:
         mTimeBetweenGlitches = 20.0f;
-        mShootFailChance = 0.25f;
+        mShootFailChance = 0.10f;
         break;
     case RepairLevel::Fixed:
         mTimeBetweenGlitches = 99999.0f;
@@ -90,7 +90,7 @@ void Mario::OnProcessInput(const uint8_t* state)
         mIsRunning = true;
     }
 
-    if (state[SDL_SCANCODE_SPACE] && IsOnGround()){
+    if (state[SDL_SCANCODE_UP] && IsOnGround()){
         Vector2 vel = mRigidBodyComponent->GetVelocity();
         vel.y = mJumpSpeed;
         mRigidBodyComponent->SetVelocity(vel);
@@ -98,7 +98,7 @@ void Mario::OnProcessInput(const uint8_t* state)
         GetGame()->PlayJumpChunk();
     }
 
-    if (state[SDL_SCANCODE_X]) {
+    if (state[SDL_SCANCODE_SPACE]) {
         HandleShooting();
         GetGame()->PlayShootChunk();
     }

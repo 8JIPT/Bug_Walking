@@ -31,7 +31,7 @@ void Bullet::OnHorizontalCollision(const float minOverlap, AABBColliderComponent
     if (other->GetLayer() == ColliderLayer::Enemy) {
         Actor* enemy = other->GetOwner();
         if (enemy) {
-            enemy->Kill();
+            enemy->TakeDamage(1);
         }
         SetState(ActorState::Destroy);
     }

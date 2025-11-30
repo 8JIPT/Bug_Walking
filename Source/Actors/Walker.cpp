@@ -160,8 +160,9 @@ void Walker::UpdateFollowing(float deltaTime)
 
     Vector2 playerPos = player->GetPosition();
     float horizontalDistance = Math::Abs(playerPos.x - mPosition.x);
+    float verticalDistance = Math::Abs(playerPos.y - mPosition.y);
     float totalDistance = (playerPos - mPosition).Length();
-    if (horizontalDistance <= ATTACK_DIST)
+    if (horizontalDistance <= ATTACK_DISTX && verticalDistance <= ATTACK_DISTY)
     {
         mMode = WalkerMode::Battle;
         mDrawComponent->SetAnimation("idle");
@@ -215,7 +216,8 @@ void Walker::UpdateBattle(float deltaTime)
 
     Vector2 playerPos = player->GetPosition();
     float horizontalDistance = Math::Abs(playerPos.x - mPosition.x);
-    if (horizontalDistance > ATTACK_DIST * 1.8f)
+    float verticalDistance = Math::Abs(playerPos.y - mPosition.y);
+    if (horizontalDistance > ATTACK_DISTX + 2* Game::TILE_SIZE || verticalDistance > ATTACK_DISTY + 2* Game::TILE_SIZE)
     {
         mMode = WalkerMode::Following;
         mDrawComponent->SetAnimation("walk");

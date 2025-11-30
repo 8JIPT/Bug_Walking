@@ -40,6 +40,8 @@ private:
     float mMoveSpeed;
     float mDyingTimer;
     bool mIsDying;
+    float mDamageTimer;
+    std::string mPreviousAnimation;
 
     // Mode system
     ChaserMode mMode;
