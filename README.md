@@ -51,16 +51,16 @@ Menus do jogo e gameplay:
 
 
 # Créditos dos Assets Utilizados
-Robô personagem principal: https://nicopardo.itch.io/x-reploit-pack?download  
-Mísseis: https://opengameart.org/content/custom-missiles  
-Inimigo 1: https://free-game-assets.itch.io/free-drones-pack-pixel-art  
-Inimigo 2: https://penusbmic.itch.io/sci-fi-character-pack-7  
-Industrial Zone: https://free-game-assets.itch.io/free-industrial-zone-tileset-pixel-art  
-Power Station: https://free-game-assets.itch.io/power-station-free-tileset-pixel-art  
-Barra de vida: https://atebits.itch.io/health-pack  
-Fonte: https://poppyworks.itch.io/silver  
-SFX do Glitch: https://opengameart.org/content/ice-electricity-magic
-Musica de fundo: https://opengameart.org/content/the-gears-of-progress
-Som da falha do disparo: https://pixabay.com/sound-effects/empty-gun-shot-6209/
-Sprite da fumaça: https://opengameart.org/content/fire-smoke-animations
-Logo: IA
+- Robô personagem principal: https://nicopardo.itch.io/x-reploit-pack?download  
+- Mísseis: https://opengameart.org/content/custom-missiles  
+- Inimigo 1: https://free-game-assets.itch.io/free-drones-pack-pixel-art  
+- Inimigo 2: https://penusbmic.itch.io/sci-fi-character-pack-7  
+- Industrial Zone: https://free-game-assets.itch.io/free-industrial-zone-tileset-pixel-art  
+- Power Station: https://free-game-assets.itch.io/power-station-free-tileset-pixel-art  
+- Barra de vida: https://atebits.itch.io/health-pack  
+- Fonte: https://poppyworks.itch.io/silver  
+- SFX do Glitch: https://opengameart.org/content/ice-electricity-magic
+- Musica de fundo: https://opengameart.org/content/the-gears-of-progress
+- Som da falha do disparo: https://pixabay.com/sound-effects/empty-gun-shot-6209/
+- Sprite da fumaça: https://opengameart.org/content/fire-smoke-animations
+- Logo: IA
