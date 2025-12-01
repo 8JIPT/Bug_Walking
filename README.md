@@ -26,17 +26,17 @@ No começo do jogo, será perceptível para o jogador que, periodicamente, o per
 ---
 
 
+# Créditos dos Assets Utilizados
+Robô personagem principal: https://nicopardo.itch.io/x-reploit-pack?download
 
-https://free-game-assets.itch.io/free-drones-pack-pixel-art?download#google_vignette
+Misseis: https://opengameart.org/content/custom-missiles
 
-https://opengameart.org/content/custom-missiles
+Inimigo 1: https://penusbmic.itch.io/sci-fi-character-pack-7
 
-https://penusbmic.itch.io/sci-fi-character-pack-7
+Industrial Zone: https://free-game-assets.itch.io/free-industrial-zone-tileset-pixel-art
 
-https://free-game-assets.itch.io/free-industrial-zone-tileset-pixel-art
+Power Stattion: https://free-game-assets.itch.io/power-station-free-tileset-pixel-art?download#google_vignette
 
-https://free-game-assets.itch.io/power-station-free-tileset-pixel-art?download#google_vignette
+Barra de vida: https://atebits.itch.io/health-pack?download#google_vignette
 
 logo: IA
-
-https://atebits.itch.io/health-pack?download#google_vignette
