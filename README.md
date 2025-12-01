@@ -37,6 +37,7 @@ Ao coletar engrenagens espalhadas pelo mapa, a taxa de falhas diminui — após 
 Tentar concluir a fase sem coletá-las é possível e mostra claramente o impacto dessas limitações.
 
 ---
+Menus do jogo e gameplay:
 ![Menu_Main.png](Menu_Main.png)
 
 ![Menu_GameOver.png](Menu_GameOver.png)
