@@ -38,13 +38,15 @@ Tentar concluir a fase sem coletá-las é possível e mostra claramente o impact
 
 ---
 Menus do jogo e gameplay:
+
+![gameplay](gameplay.gif)
+
 ![Menu_Main.png](Menu_Main.png)
 
 ![Menu_GameOver.png](Menu_GameOver.png)
 
 ![Menu_Win.png](Menu_Win.png)
 
-![gameplay](gameplay.gif)
 ---
 
 
