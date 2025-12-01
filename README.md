@@ -34,7 +34,7 @@ O jogador vence ao alcançar o final do nível e perde ao esgotar a barra de vid
 No início do jogo, o robô apresenta falhas: inputs podem não responder e ataques podem simplesmente não ser executados. Esses problemas fazem parte da mecânica central de “robô quebrado”.  
 Ao coletar engrenagens espalhadas pelo mapa, a taxa de falhas diminui — após coletar **2 engrenagens**, o robô é totalmente consertado, eliminando travamentos e falhas de ataque.
 
-Tentar concluir a fase sem coletá-las é possível e mostra claramente o impacto dessas limitações.
+É válido mencionar que tentar terminar a fase sem coletar as engrenagens é interessante para ver o impacto desses problemas intencionais.
 
 ---
 Menus do jogo e gameplay:
