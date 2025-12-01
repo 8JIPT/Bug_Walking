@@ -159,7 +159,7 @@ void Game::SetScene(GameScene nextScene)
 
     switch (nextScene) {
         case GameScene::MainMenu: {
-            auto* menu = new MainMenu(this, "../Assets/Fonts/Arial.ttf");
+            auto* menu = new MainMenu(this, "../Assets/Fonts/Silver.ttf");
             // Start music if not already playing
             if (mMusicHandle == SoundHandle::Invalid || mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
                 mMusicHandle = mAudio->PlaySound("Music-1.ogg", true);
@@ -175,7 +175,7 @@ void Game::SetScene(GameScene nextScene)
             mLevelData = LoadLevel("../Assets/Levels/level1/level1.csv", LEVEL_WIDTH, LEVEL_HEIGHT);
             if (mLevelData) BuildLevel(mLevelData, LEVEL_WIDTH, LEVEL_HEIGHT);
 
-            mHUD = new HUD(this, "../Assets/Fonts/Arial.ttf");
+            mHUD = new HUD(this, "../Assets/Fonts/Silver.ttf");
             if (mRobot && mHUD)
             {
                 mHUD->SetHealth(mRobot->GetHitPoints());
@@ -183,17 +183,17 @@ void Game::SetScene(GameScene nextScene)
             break;
         }
         case GameScene::PauseMenu: {
-            auto* pauseMenu = new PauseMenu(this, "../Assets/Fonts/Arial.ttf");
+            auto* pauseMenu = new PauseMenu(this, "../Assets/Fonts/Silver.ttf");
             if (mAudio) mAudio->PauseSound(mMusicHandle);
             break;
         }
         case GameScene::GameOver: {
-            auto* gameOver = new GameOver(this, "../Assets/Fonts/Arial.ttf");
+            auto* gameOver = new GameOver(this, "../Assets/Fonts/Silver.ttf");
             if (mAudio) mAudio->StopSound(mMusicHandle);
             break;
         }
         case GameScene::Win: {
-            auto* winScreen = new Win(this, "../Assets/Fonts/Arial.ttf");
+            auto* winScreen = new Win(this, "../Assets/Fonts/Silver.ttf");
             if (mAudio) mAudio->StopSound(mMusicHandle);
             break;
         }

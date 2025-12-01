@@ -11,7 +11,7 @@ GameOver::GameOver(class Game* game, const std::string& fontName)
 {
         float centerX = mGame->WINDOW_WIDTH / 2.0f;
         float centerY = mGame->WINDOW_HEIGHT / 2.0f;
-        AddText("Game Over", Vector2(centerX, centerY - 150.0f), 2.0f, 0.0f, 48);
+        AddText("Game Over ", Vector2(centerX, centerY - 150.0f), 2.0f, 0.0f, 48);
 
         //background
         AddImage("../Assets/Background.png", Vector2(centerX, centerY - 170.0f), 4.4f, 0.0f, 10);

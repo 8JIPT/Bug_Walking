@@ -7,7 +7,7 @@
 #include "../UIRect.h"
 
 CrossFadeScreen::CrossFadeScreen(Game* game, GameScene nextScene)
-    : UIScreen(game, "../Assets/Fonts/Arial.ttf")
+    : UIScreen(game, "../Assets/Fonts/Silver.ttf")
     , mAlpha(0.0f)
     , mFadeSpeed(2.0f)
     , mState(FadeState::FadeOut)
