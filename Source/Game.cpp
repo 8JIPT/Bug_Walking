@@ -30,6 +30,7 @@
 #include "UI/Screens/MainMenu.h"
 #include "UI/Screens/PauseMenu.h"
 #include "UI/Screens/GameOver.h"
+#include "UI/Screens/Win.h"
 #include "UI/Screens/CrossFadeScreen.h"
 
 Game::Game()
@@ -188,6 +189,11 @@ void Game::SetScene(GameScene nextScene)
         }
         case GameScene::GameOver: {
             auto* gameOver = new GameOver(this, "../Assets/Fonts/Arial.ttf");
+            if (mAudio) mAudio->StopSound(mMusicHandle);
+            break;
+        }
+        case GameScene::Win: {
+            auto* winScreen = new Win(this, "../Assets/Fonts/Arial.ttf");
             if (mAudio) mAudio->StopSound(mMusicHandle);
             break;
         }

@@ -28,7 +28,8 @@ enum class GameScene
     MainMenu,
     Level1,
     PauseMenu,
-    GameOver
+    GameOver,
+    Win
 };
 
 class Game
@@ -78,6 +79,7 @@ public:
     static const int LEVEL_HEIGHT   = 90;
     static const int TILE_SIZE      = 32;
     static const int SPAWN_DISTANCE = 400;
+    static const int WIN_Y          = 300; // Y coordinate to trigger win condition
     static const int FPS = 60;
 
     static const int EPS = 2;

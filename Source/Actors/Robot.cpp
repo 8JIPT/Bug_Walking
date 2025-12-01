@@ -99,6 +99,13 @@ void Robot::OnUpdate(float deltaTime)
     }
     mHitThisFrame = false;
     if (mRigidBodyComponent->GetVelocity().y != 0.0f) SetOffGround();
+    
+    // Check win condition
+    if (mPosition.y <= Game::WIN_Y && !mIsDead) {
+        SDL_Log("Robot reached win position!");
+        GetGame()->SetScene(GameScene::Win);
+        return;
+    }
     if (mPosition.y > Game::LEVEL_HEIGHT * Game::TILE_SIZE) {
         Kill();
     }
