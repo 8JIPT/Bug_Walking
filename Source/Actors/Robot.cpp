@@ -48,12 +48,12 @@ void Robot::SetRepairLevel(RepairLevel level) {
     switch (level) {
     case RepairLevel::Critical:
         mTimeBetweenGlitches = 10.0f;
-        mShootFailChance = 0.0f;
+        mShootFailChance = 0.5f;
         SDL_Log("[RepairLevel] Mudou para CRITICAL");
         break;
     case RepairLevel::Damaged:
         mTimeBetweenGlitches = 20.0f;
-        mShootFailChance = 0.0f;
+        mShootFailChance = 0.25f;
         SDL_Log("[RepairLevel] Mudou para DAMAGED");
         break;
     case RepairLevel::Fixed:

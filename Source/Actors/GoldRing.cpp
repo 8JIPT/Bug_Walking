@@ -7,13 +7,13 @@
 GoldRing::GoldRing(Game* game)
     : Actor(game)
 {
-    // Cria animação do anel dourado
-    auto* anim = new AnimatorComponent(this, "../Assets/Sprites/GoldRing/GoldRing_Animation_RP1 (16x16).png", "../Assets/Sprites/GoldRing/GoldRing.json", 16, 16, 200);
+    // Cria animação do anel dourado com o dobro do tamanho (32x32)
+    auto* anim = new AnimatorComponent(this, "../Assets/Sprites/GoldRing/GoldRing_Animation_RP1 (16x16).png", "../Assets/Sprites/GoldRing/GoldRing.json", 32, 32, 200);
     anim->AddAnimation("spin", {0, 1, 2, 3});
     anim->SetAnimFPS(10.0f);
     anim->SetAnimation("spin");
-    // Collider para coleta
-    new AABBColliderComponent(this, 0, 0, 16, 16, ColliderLayer::Item, true);
+    // Collider para coleta, também com o dobro do tamanho
+    new AABBColliderComponent(this, 0, 0, 32, 32, ColliderLayer::Item, true);
 }
 
 void GoldRing::OnUpdate(float deltaTime) {
