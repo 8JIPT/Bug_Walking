@@ -304,6 +304,7 @@ void Game::LoadSounds() {
     mShootChunk   = Mix_LoadWAV("../Assets/Sounds/Laser_Shoot.wav");
     mStageClearChunk = Mix_LoadWAV("../Assets/Sounds/StageClear.wav");
     mGlitchChunk     = Mix_LoadWAV("../Assets/Sounds/Glitch.flac");
+    mFailedShotChunk = Mix_LoadWAV("../Assets/Sounds/FailedShot.mp3");
 
     if (!mGlitchChunk) {
         SDL_Log("Falha ao carregar Glitch.flac: %s", Mix_GetError());
@@ -333,6 +334,12 @@ void Game::PlayStageClearChunk() {
 void Game::PlayGlitchChunk() const {
     if (mGlitchChunk) {
         Mix_PlayChannel(-1, mGlitchChunk, 0);
+    }
+}
+
+void Game::PlayFailedShotChunk() const {
+    if (mGlitchChunk) {
+        Mix_PlayChannel(-1, mFailedShotChunk, 0);
     }
 }
 
@@ -648,6 +655,7 @@ void Game::Shutdown()
     Mix_FreeChunk(mShootChunk);
     Mix_FreeChunk(mStageClearChunk);
     Mix_FreeChunk(mGlitchChunk);
+    Mix_FreeChunk(mFailedShotChunk);
 
     Mix_CloseAudio();
 

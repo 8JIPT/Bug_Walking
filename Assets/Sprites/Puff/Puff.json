@@ -1,0 +1,81 @@
+{
+  "meta": {
+    "image": "Puff.png",
+    "size": {"w": 180, "h": 20},
+    "scale": "1"
+  },
+  "frames": [
+    {
+      "filename": "Smoke_1",
+      "frame": {"x": 0, "y": 0, "w": 20, "h": 20},
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {"x": 0, "y": 0, "w": 20, "h": 20},
+      "sourceSize": {"w": 20, "h": 20}
+    },
+    {
+      "filename": "Smoke_2",
+      "frame": {"x": 20, "y": 0, "w": 20, "h": 20},
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {"x": 0, "y": 0, "w": 20, "h": 20},
+      "sourceSize": {"w": 20, "h": 20}
+    },
+    {
+      "filename": "Smoke_3",
+      "frame": {"x": 40, "y": 0, "w": 20, "h": 20},
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {"x": 0, "y": 0, "w": 20, "h": 20},
+      "sourceSize": {"w": 20, "h": 20}
+    },
+    {
+      "filename": "Smoke_4",
+      "frame": {"x": 60, "y": 0, "w": 20, "h": 20},
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {"x": 0, "y": 0, "w": 20, "h": 20},
+      "sourceSize": {"w": 20, "h": 20}
+    },
+    {
+      "filename": "Smoke_5",
+      "frame": {"x": 80, "y": 0, "w": 20, "h": 20},
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {"x": 0, "y": 0, "w": 20, "h": 20},
+      "sourceSize": {"w": 20, "h": 20}
+    },
+    {
+      "filename": "Smoke_6",
+      "frame": {"x": 100, "y": 0, "w": 20, "h": 20},
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {"x": 0, "y": 0, "w": 20, "h": 20},
+      "sourceSize": {"w": 20, "h": 20}
+    },
+    {
+      "filename": "Smoke_7",
+      "frame": {"x": 120, "y": 0, "w": 20, "h": 20},
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {"x": 0, "y": 0, "w": 20, "h": 20},
+      "sourceSize": {"w": 20, "h": 20}
+    },
+    {
+      "filename": "Smoke_8",
+      "frame": {"x": 140, "y": 0, "w": 20, "h": 20},
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {"x": 0, "y": 0, "w": 20, "h": 20},
+      "sourceSize": {"w": 20, "h": 20}
+    },
+    {
+      "filename": "Smoke_9",
+      "frame": {"x": 160, "y": 0, "w": 20, "h": 20},
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {"x": 0, "y": 0, "w": 20, "h": 20},
+      "sourceSize": {"w": 20, "h": 20}
+    }
+  ]
+}

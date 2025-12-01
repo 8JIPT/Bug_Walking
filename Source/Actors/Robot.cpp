@@ -9,6 +9,7 @@
 #include  "Bullet.h"
 #include "GoldRing.h"
 #include  "../Random.h"
+#include "SmokeEffect.h"
 
 Robot::Robot(Game* game, const float forwardSpeed, const float jumpSpeed)
         : Actor(game)
@@ -165,16 +166,24 @@ void Robot::HandleGlitches(float deltaTime) {
 void Robot::HandleShooting() {
     if (mShootCooldownTimer > 0.0f) return;
     mShootCooldownTimer = mShootCooldown;
+
+    float direction = mScale.x;
+
+    Vector2 spawnPos = GetPosition();
+    spawnPos.x += (25.0f) * direction;
+    spawnPos.y += -3.0f;
+
     float roll = Random::GetFloat();
     if (roll < mShootFailChance) {
         SDL_Log("GLITCH: Arma falhou ao disparar!");
+        new SmokeEffect(GetGame(), spawnPos, direction);
+
+        GetGame()->PlayFailedShotChunk();
+
         return;
     }
-    float direction = mScale.x;
+
     Bullet* bullet = new Bullet(GetGame(), direction);
-    Vector2 spawnPos = GetPosition();
-    spawnPos.y += (-5.0f);
-    spawnPos.x += (20.0f) * direction;
     bullet->SetPosition(spawnPos);
 
     GetGame()->PlayShootChunk();
