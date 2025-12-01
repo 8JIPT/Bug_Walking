@@ -59,4 +59,8 @@ Industrial Zone: https://free-game-assets.itch.io/free-industrial-zone-tileset-p
 Power Station: https://free-game-assets.itch.io/power-station-free-tileset-pixel-art  
 Barra de vida: https://atebits.itch.io/health-pack  
 Fonte: https://poppyworks.itch.io/silver  
+SFX do Glitch: https://opengameart.org/content/ice-electricity-magic
+Musica de fundo: https://opengameart.org/content/the-gears-of-progress
+Som da falha do disparo: https://pixabay.com/sound-effects/empty-gun-shot-6209/
+Sprite da fumaça: https://opengameart.org/content/fire-smoke-animations
 Logo: IA
