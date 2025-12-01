@@ -22,6 +22,8 @@ public:
     int GetHitPoints() const { return mHitPoints; }
     int GetMaxHitPoints() const { return mMaxHitPoints; }
 
+    void UpgradeRepairLevel();
+
 private:
     void ManageAnimations();
 

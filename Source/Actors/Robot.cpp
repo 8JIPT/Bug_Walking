@@ -7,6 +7,7 @@
 #include "../Components/Physics/AABBColliderComponent.h"
 #include "../Components/ParticleSystemComponent.h"
 #include  "Bullet.h"
+#include "GoldRing.h"
 #include  "../Random.h"
 
 Robot::Robot(Game* game, const float forwardSpeed, const float jumpSpeed)
@@ -19,6 +20,7 @@ Robot::Robot(Game* game, const float forwardSpeed, const float jumpSpeed)
         , mShootCooldownTimer(0.0f)
         , mGlitchDurationTimer(0.0f)
         , mIsInputLocked(false)
+        , mCurrentLevel(RepairLevel::Critical) // Garante que começa em Critical
 {
     mNormalDraw = new AnimatorComponent(this, "../Assets/Sprites/Robot/Character_SpriteSheet_RP1_free (40x40).png", "../Assets/Sprites/Robot/Robot.json", Game::TILE_SIZE * 2, Game::TILE_SIZE * 2, 100);
     mNormalDraw->SetOffset(Vector2(0, Game::TILE_SIZE * -0.4));
@@ -47,14 +49,17 @@ void Robot::SetRepairLevel(RepairLevel level) {
     case RepairLevel::Critical:
         mTimeBetweenGlitches = 10.0f;
         mShootFailChance = 0.0f;
+        SDL_Log("[RepairLevel] Mudou para CRITICAL");
         break;
     case RepairLevel::Damaged:
         mTimeBetweenGlitches = 20.0f;
         mShootFailChance = 0.0f;
+        SDL_Log("[RepairLevel] Mudou para DAMAGED");
         break;
     case RepairLevel::Fixed:
         mTimeBetweenGlitches = 99999.0f;
         mShootFailChance = 0.0f;
+        SDL_Log("[RepairLevel] Mudou para FIXED");
         break;
     }
     mGlitchTimer = mTimeBetweenGlitches;
@@ -227,6 +232,18 @@ void Robot::Kill()
     SDL_Log("Killed");
 }
 
+void Robot::UpgradeRepairLevel() {
+    if (mCurrentLevel == RepairLevel::Critical) {
+        SetRepairLevel(RepairLevel::Damaged);
+        SDL_Log("RepairLevel up: Damaged");
+    } else if (mCurrentLevel == RepairLevel::Damaged) {
+        SetRepairLevel(RepairLevel::Fixed);
+        SDL_Log("RepairLevel up: Fixed");
+    } else {
+        SDL_Log("RepairLevel já está no máximo!");
+    }
+}
+
 void Robot::OnHorizontalCollision(const float minOverlap, AABBColliderComponent* other)
 {
     if (!other || mHitThisFrame) return;
@@ -241,7 +258,16 @@ void Robot::OnHorizontalCollision(const float minOverlap, AABBColliderComponent*
         }
         TakeDamage(1);
     }
-    if (other->GetLayer() == ColliderLayer::Item){
+    if (other->GetLayer() == ColliderLayer::Item) {
+        Actor* item = other->GetOwner();
+        if (item && strcmp(item->GetName(), "GoldRing") == 0) {
+            GoldRing* ring = dynamic_cast<GoldRing*>(item);
+            if (ring) {
+                SDL_Log("[Robot] Coletando GoldRing: aumentando RepairLevel e destruindo GoldRing");
+                UpgradeRepairLevel();
+                ring->SetState(ActorState::Destroy);
+            }
+        }
         // PowerUp(); // Se quiser implementar powerup para Robot
     }
 }

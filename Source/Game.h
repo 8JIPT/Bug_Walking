@@ -106,6 +106,7 @@ public:
     void PlayJumpChunk() const;
     void PlayShootChunk() const;
     void PlayStageClearChunk();
+    void SpawnRandomGoldRings(int quantidade, int width, int height, int** levelData);
 
 private:
     void ProcessInput();

@@ -25,6 +25,7 @@
 #include "Actors/ChaserSpawner.h"
 #include "Actors/Walker.h"
 #include "Actors/WalkerSpawner.h"
+#include "Actors/GoldRing.h"
 #include "AudioSystem.h"
 #include "UI/Screens/HUD.h"
 #include "UI/Screens/MainMenu.h"
@@ -292,6 +293,8 @@ void Game::BuildLevel(int** levelData, int width, int height){
             }
         }
     }
+    // Adiciona 10 GoldRings aleatórios após construir o mapa
+    SpawnRandomGoldRings(10, width, height, levelData);
 }
 
 void Game::LoadSounds() {
@@ -637,4 +640,21 @@ void Game::Shutdown()
     Mix_CloseAudio();
 
     SDL_Quit();
+}
+
+void Game::SpawnRandomGoldRings(int quantidade, int width, int height, int** levelData) {
+    int tentativas = 0;
+    int maxTentativas = quantidade * 10;
+    int ringsCriados = 0;
+    while (ringsCriados < quantidade && tentativas < maxTentativas) {
+        int col = rand() % width;
+        int row = rand() % height;
+        if (levelData[row][col] == -1) { // Tile vazio
+            Vector2 pos(col * TILE_SIZE + TILE_SIZE * 0.5f, row * TILE_SIZE + TILE_SIZE * 0.5f);
+            GoldRing* ring = new GoldRing(this);
+            ring->SetPosition(pos);
+            ringsCriados++;
+        }
+        tentativas++;
+    }
 }

@@ -1,0 +1,13 @@
+{
+  "frames": [
+    { "filename": "ring_0", "frame": { "x": 0,  "y": 0, "w": 16, "h": 16 } },
+    { "filename": "ring_1", "frame": { "x": 16, "y": 0, "w": 16, "h": 16 } },
+    { "filename": "ring_2", "frame": { "x": 32, "y": 0, "w": 16, "h": 16 } },
+    { "filename": "ring_3", "frame": { "x": 48, "y": 0, "w": 16, "h": 16 } }
+  ],
+  "meta": {
+    "image": "GoldRing_Animation_RP1 (16x16).png",
+    "size": { "w": 64, "h": 16 },
+    "tile": 16
+  }
+}

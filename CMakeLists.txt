@@ -6,14 +6,15 @@ set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_NAME "bug_walking")
 project(${PROJECT_NAME})
 
-set(GLEW_ROOT "C:/Program Files/glew-2.1.0")
+# set(GLEW_ROOT "C:/Program Files/glew-2.1.0")
 
-find_package(SDL2 2.32.2 EXACT REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(SDL2 2.32 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_mixer REQUIRED)
 find_package(SDL2_ttf REQUIRED)
-include_directories(${GLEW_ROOT}/include)
-link_directories(${GLEW_ROOT}/lib/Release/x64)
+#include_directories(${GLEW_ROOT}/include)
+#link_directories(${GLEW_ROOT}/lib/Release/x64)
 find_package(OpenGL REQUIRED)
 
 add_executable(${PROJECT_NAME}
@@ -58,9 +59,8 @@ add_executable(${PROJECT_NAME}
         Source/UI/Screens/MainMenu.cpp
         Source/UI/Screens/MainMenu.h
         Source/UI/Screens/GameOver.cpp
-        Source/UI/Screens/GameOver.h
         Source/UI/Screens/Win.cpp
-        Source/UI/Screens/Win.h
+        Source/Actors/GoldRing.cpp
         Source/UI/Screens/PauseMenu.cpp
         Source/UI/Screens/PauseMenu.h
         Source/UI/Screens/CrossFadeScreen.cpp
@@ -97,10 +97,45 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Walker.h
         Source/Actors/WalkerSpawner.cpp
         Source/Actors/WalkerSpawner.h
-        Source/Actors/Robot.h
         Source/Actors/Robot.cpp
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${GLEW_ROOT}/include ${SDL2_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE glew32 ${SDL2_LIBRARIES} opengl32)
+# Incluir diretórios de terceiros (GLEW/SDL2)
+# Se o pacote GLEW fornecer um alvo IMPORTED use-o; caso contrário use as variáveis definidas por find_package
+if(TARGET GLEW::GLEW)
+    set(GLEW_TARGET GLEW::GLEW)
+else()
+    # fallback para variáveis clássicas do find_package(GLEW)
+    if(NOT DEFINED GLEW_INCLUDE_DIRS)
+        message(FATAL_ERROR "GLEW encontrado, mas GLEW_INCLUDE_DIRS não definido. Verifique a instalação do GLEW.")
+    endif()
+    target_include_directories(${PROJECT_NAME} PRIVATE ${GLEW_INCLUDE_DIRS})
+    if(DEFINED GLEW_LIBRARIES)
+        set(GLEW_LIBS ${GLEW_LIBRARIES})
+    endif()
+endif()
+
+# Inclui SDL2
+target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIRS})
+
+# Liga bibliotecas
+if(DEFINED GLEW_TARGET)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${GLEW_TARGET})
+elseif(DEFINED GLEW_LIBS)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${GLEW_LIBS})
+endif()
+
+# Usar OpenGL::GL (cross-platform) em vez de opengl32 (Windows-only)
+if(TARGET OpenGL::GL)
+    target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
+elseif(APPLE)
+    find_library(COCOA_FRAMEWORK Cocoa)
+    find_library(OPENGL_FRAMEWORK OpenGL)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_FRAMEWORK} ${COCOA_FRAMEWORK})
+else()
+    # fallback genérico
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
+endif()
+
+# Linkando targets SDL2
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image SDL2_mixer::SDL2_mixer SDL2_ttf::SDL2_ttf)
