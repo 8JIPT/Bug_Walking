@@ -8,17 +8,20 @@
 #include "Physics/RigidBodyComponent.h"
 #include "Drawing/RectComponent.h"
 
-Particle::Particle(class Game* game, int width, int height)
+Particle::Particle(class Game* game, int width, int height, bool hasCollision)
     : Actor(game)
     , mDrawComponent(nullptr)
     , mRigidBodyComponent(nullptr)
     , mColliderComponent(nullptr)
     , mIsDead(true)
     , mLifeTime(1.0f)
+    , mHasCollision(hasCollision)
 {
     mDrawComponent = new RectComponent(this, width, height, RendererMode::TRIANGLES);
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 0.0f, true);
     mColliderComponent = new AABBColliderComponent(this, 0, 0, width, height, ColliderLayer::Blocks);
+    if (mHasCollision)
+        mColliderComponent->SetEnabled(hasCollision);
 
     SetState(ActorState::Paused);
     mDrawComponent->SetVisible(false);
@@ -42,7 +45,7 @@ void Particle::Awake(const Vector2 &position, float rotation, float lifetime)
     mIsDead = false;
     SetState(ActorState::Active);
     mDrawComponent->SetVisible(true);
-    mColliderComponent->SetEnabled(true);
+    if(mHasCollision)mColliderComponent->SetEnabled(true);
 
     SetPosition(position);
     SetRotation(rotation);

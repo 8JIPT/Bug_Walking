@@ -11,7 +11,7 @@
 class Particle : public Actor
 {
 public:
-    Particle(class Game* game, int width, int height);
+    Particle(class Game* game, int width, int height, bool hasCollision = false);
 
     void OnUpdate(float deltaTime) override;
 
@@ -22,6 +22,7 @@ public:
 private:
     float mLifeTime;
     bool mIsDead;
+    bool mHasCollision;
 
     class DrawComponent* mDrawComponent;
     class RigidBodyComponent* mRigidBodyComponent;
