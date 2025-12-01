@@ -163,7 +163,7 @@ void Game::SetScene(GameScene nextScene)
             auto* menu = new MainMenu(this, "../Assets/Fonts/Silver.ttf");
             // Start music if not already playing
             if (mMusicHandle == SoundHandle::Invalid || mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
-                mMusicHandle = mAudio->PlaySound("Music-1.ogg", true);
+                mMusicHandle = mAudio->PlaySound("S31-The Gears of Progress.ogg", true);
             }
             break;
         }
@@ -303,6 +303,11 @@ void Game::LoadSounds() {
     mJumpChunk       = Mix_LoadWAV("../Assets/Sounds/Jump.wav");
     mShootChunk   = Mix_LoadWAV("../Assets/Sounds/Laser_Shoot.wav");
     mStageClearChunk = Mix_LoadWAV("../Assets/Sounds/StageClear.wav");
+    mGlitchChunk     = Mix_LoadWAV("../Assets/Sounds/Glitch.flac");
+
+    if (!mGlitchChunk) {
+        SDL_Log("Falha ao carregar Glitch.flac: %s", Mix_GetError());
+    }
 }
 
 void Game::PlayDeadChunk() {
@@ -323,6 +328,12 @@ void Game::PlayShootChunk() const {
 void Game::PlayStageClearChunk() {
 
 
+}
+
+void Game::PlayGlitchChunk() const {
+    if (mGlitchChunk) {
+        Mix_PlayChannel(-1, mGlitchChunk, 0);
+    }
 }
 
 void Game::RunLoop()
@@ -636,6 +647,7 @@ void Game::Shutdown()
     Mix_FreeChunk(mJumpChunk);
     Mix_FreeChunk(mShootChunk);
     Mix_FreeChunk(mStageClearChunk);
+    Mix_FreeChunk(mGlitchChunk);
 
     Mix_CloseAudio();
 

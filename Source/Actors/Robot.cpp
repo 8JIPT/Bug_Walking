@@ -156,6 +156,8 @@ void Robot::HandleGlitches(float deltaTime) {
         Vector2 vel = mRigidBodyComponent->GetVelocity();
         vel.x = 0.0f;
         mRigidBodyComponent->SetVelocity(vel);
+
+        GetGame()->PlayGlitchChunk();
         SDL_Log("GLITCH: Input de movimento perdido!");
     }
 }

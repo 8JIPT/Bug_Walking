@@ -108,6 +108,8 @@ public:
     void PlayStageClearChunk();
     void SpawnRandomGoldRings(int quantidade, int width, int height, int** levelData);
 
+    void PlayGlitchChunk() const;
+
 private:
     void ProcessInput();
     void UpdateGame(float deltaTime);
@@ -150,6 +152,7 @@ private:
     Mix_Chunk *mShootChunk;
     //Mix_Chunk *mPowerUpChunk;
     Mix_Chunk *mStageClearChunk;
+    Mix_Chunk* mGlitchChunk;
 
     // Track elapsed time since game start
     Uint32 mTicksCount;
