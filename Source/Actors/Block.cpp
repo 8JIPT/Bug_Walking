@@ -6,7 +6,6 @@
 #include "../Game.h"
 #include "../Components/Drawing/AnimatorComponent.h"
 #include "../Components/Physics/AABBColliderComponent.h"
-#include "Mushroom.h"
 
 Block::Block(Game* game, const std::string &texturePath, bool canBeBumped, bool canCreateMushroom)
     :Actor(game)
@@ -30,11 +29,6 @@ void Block::Kill(){
         mBumpOffset = 0.0f;
         mBumpSpeed = 100.0f;
         SDL_Log("Block Bumped!");
-        if (mCanCreateMushroom){
-            Vector2 spawnPos = GetPosition() + Vector2(0.0f, -static_cast<float>(Game::TILE_SIZE) - Game::EPS);
-            new Mushroom(GetGame(), spawnPos, 150.0f);
-            mCanCreateMushroom = false;
-        }
     }
 }
 

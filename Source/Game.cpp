@@ -17,10 +17,7 @@
 #include "Random.h"
 #include "Actors/Actor.h"
 #include "Actors/Block.h"
-#include "Actors/Goomba.h"
-#include "Actors/Spawner.h"
 #include "Actors/Robot.h"
-#include "Actors/Mushroom.h"
 #include "Actors/Chaser.h"
 #include "Actors/ChaserSpawner.h"
 #include "Actors/Walker.h"
@@ -264,7 +261,7 @@ void Game::BuildLevel(int** levelData, int width, int height){
             Vector2 position(col * TILE_SIZE + TILE_SIZE * 0.5f, row * TILE_SIZE + TILE_SIZE * 0.5f);
             std::string baseAddr = "../Assets/Sprites/Blocks";
             switch (info.id){
-                case 222:{//Mario
+                case 222:{//Player
                     mRobot = new Robot(this);
                     mRobot->SetPosition(position);
                     break;
@@ -422,7 +419,7 @@ void Game::UpdateGame(float deltaTime)
         // Update audio system
         if (mAudio) mAudio->Update(deltaTime);
 
-        // Check if Mario is dead
+        // Check if Robot is dead
         if (mRobot && mRobot->IsDead()) {
             SetScene(GameScene::GameOver);
             return;

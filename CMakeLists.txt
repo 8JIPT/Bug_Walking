@@ -73,18 +73,10 @@ add_executable(${PROJECT_NAME}
         Source/Renderer/Texture.h
         Source/Actors/Block.cpp
         Source/Actors/Block.h
-        Source/Actors/Goomba.cpp
-        Source/Actors/Goomba.h
-        Source/Actors/Spawner.cpp
-        Source/Actors/Spawner.h
-        Source/Actors/Mario.cpp
-        Source/Actors/Mario.h
         Source/Components/Drawing/AnimatorComponent.cpp
         Source/Components/Drawing/AnimatorComponent.h
         Source/Components/Drawing/RectComponent.cpp
         Source/Components/Drawing/RectComponent.h
-        Source/Actors/Mushroom.cpp
-        Source/Actors/Mushroom.h
         Source/Actors/Bullet.cpp
         Source/Actors/Bullet.h
         Source/Actors/Chaser.cpp
@@ -101,8 +93,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Robot.cpp
         Source/Actors/GoldRing.cpp
         Source/Actors/GoldRing.h
-
-
+        Source/Actors/SmokeEffect.h
+        Source/Actors/SmokeEffect.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${GLEW_ROOT}/include ${SDL2_INCLUDE_DIRS})
