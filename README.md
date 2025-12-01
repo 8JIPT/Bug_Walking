@@ -17,6 +17,12 @@ O jogador controla o personagem por meio das setas do teclado, pulando com a set
 No começo do jogo, será perceptível para o jogador que, periodicamente, o personagem “trava”, não reconhecendo o input, e que nem todos os ataques são executados, isso se deve à mecânica relacionada ao fato do robô estar quebrado. Assim, ao longo do jogo, é preciso coletar engrenagens, no mapa, para consertar o personagem, diminuindo a frequência com que a “trava” ocorre e a porcentagem da falha dos ataques. Após coletar 2 engrenagens, o robô é consertado, significando que os problemas destacados deixam de ocorrer.
 
 ![img.png](img.png)
+
+![img_1.png](img_1.png)
+
+![img_2.png](img_2.png)
+
+![img_3.png](img_3.png)
 ---
 
 
