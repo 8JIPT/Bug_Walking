@@ -23,6 +23,7 @@ PauseMenu::PauseMenu(class Game* game, const std::string& fontName)
         AudioSystem* audio = mGame->GetAudio();
         Robot* robot = mGame->GetPlayer();
         audio->ResumeSound(mGame->GetMusicHandle());
+        audio->ResumeSound(mGame->GetEmergencyMusicHandle());
         mGame->SetIsPaused(false);
         this->Close();
     }, Vector2(centerX, centerY), 1.0f, 0.0f, 32, 300, 110);

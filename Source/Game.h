@@ -56,6 +56,7 @@ public:
     // Audio
     AudioSystem* GetAudio() { return mAudio; }
     SoundHandle GetMusicHandle() const { return mMusicHandle; }
+    SoundHandle GetEmergencyMusicHandle() const { return mEmergencyAlertHandle; }
 
     // Tiles Processing
     TiledTileInfo DecodeTiledID(uint32_t raw);
@@ -152,6 +153,7 @@ private:
     // Audio system
     AudioSystem* mAudio;
     SoundHandle mMusicHandle;
+    SoundHandle mEmergencyAlertHandle;
 
     //Mix_Chunk *mBumpChunk;
     //Mix_Chunk *mCoinChunk;

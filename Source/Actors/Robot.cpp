@@ -219,6 +219,7 @@ void Robot::TakeDamage(int damage)
     if (mIsDead || mHitTimer > 0.0f)
         return;
     mHitPoints -= damage;
+    mGame->GetAudio()->PlaySound("hurt.wav");
     // Update HUD
     if (GetGame()->GetHUD())
     {

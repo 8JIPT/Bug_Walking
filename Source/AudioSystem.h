@@ -94,6 +94,9 @@ public:
     // Returns the current state of the sound
     SoundState GetSoundState(SoundHandle sound);
 
+    // Sets the volume for a specific sound (0-128, where 128 is max volume)
+    void SetSoundVolume(SoundHandle sound, int volume);
+
     // Stops all sounds on all channels
     void StopAllSounds();
 

@@ -46,6 +46,7 @@ Game::Game()
         ,mIsPaused(false)
         ,mIsSceneTransitioning(false)
         ,mMusicHandle(SoundHandle::Invalid)
+        ,mEmergencyAlertHandle(SoundHandle::Invalid)
         ,mLevelWidth(30)
         ,mLevelHeight(90)
         ,mSavedRepairLevel(RepairLevel::Critical)
@@ -118,6 +119,12 @@ void Game::InitializeActors()
 
 void Game::UnloadScene()
 {
+    // Stop emergency alert if playing
+    if (mEmergencyAlertHandle != SoundHandle::Invalid) {
+        mAudio->StopSound(mEmergencyAlertHandle);
+        mEmergencyAlertHandle = SoundHandle::Invalid;
+    }
+
     // Save robot's repair level before destroying
     if (mRobot) {
         mSavedRepairLevel = mRobot->GetRepairLevel();
@@ -175,6 +182,7 @@ void Game::SetScene(GameScene nextScene)
             // Start music if not already playing
             if (mMusicHandle == SoundHandle::Invalid || mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
                 mMusicHandle = mAudio->PlaySound("S31-The Gears of Progress.ogg", true);
+                mAudio->SetSoundVolume(mMusicHandle, 51); // Set to 40% volume (51/128)
             }
             break;
         }
@@ -203,6 +211,7 @@ void Game::SetScene(GameScene nextScene)
         case GameScene::PauseMenu: {
             auto* pauseMenu = new PauseMenu(this, "../Assets/Fonts/Silver.ttf");
             if (mAudio) mAudio->PauseSound(mMusicHandle);
+            if (mAudio) mAudio->PauseSound(mEmergencyAlertHandle);
             break;
         }
         case GameScene::GameOver: {
@@ -515,8 +524,32 @@ void Game::UpdateGame(float deltaTime)
         // Update audio system
         if (mAudio) mAudio->Update(deltaTime);
 
+        // Check emergency alert based on Robot's health
+        if (mRobot && !mRobot->IsDead()) {
+            if (mRobot->GetHitPoints() <= 1) {
+                // Start emergency alert if not already playing
+                if (mEmergencyAlertHandle == SoundHandle::Invalid || 
+                    mAudio->GetSoundState(mEmergencyAlertHandle) != SoundState::Playing) {
+                    mEmergencyAlertHandle = mAudio->PlaySound("Emergency Alert.wav", true);
+                    mAudio->SetSoundVolume(mEmergencyAlertHandle, 6); // 5% volume (6/128)
+                }
+            } else {
+                // Stop emergency alert if health is above 1
+                if (mEmergencyAlertHandle != SoundHandle::Invalid && 
+                    mAudio->GetSoundState(mEmergencyAlertHandle) == SoundState::Playing) {
+                    mAudio->StopSound(mEmergencyAlertHandle);
+                    mEmergencyAlertHandle = SoundHandle::Invalid;
+                }
+            }
+        }
+
         // Check if Robot is dead
         if (mRobot && mRobot->IsDead()) {
+            // Stop emergency alert on death
+            if (mEmergencyAlertHandle != SoundHandle::Invalid) {
+                mAudio->StopSound(mEmergencyAlertHandle);
+                mEmergencyAlertHandle = SoundHandle::Invalid;
+            }
             SetScene(GameScene::GameOver);
             return;
         }

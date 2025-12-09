@@ -155,6 +155,19 @@ SoundState AudioSystem::GetSoundState(SoundHandle sound)
     return SoundState::Playing;
 }
 
+// Sets the volume for a specific sound (0-128, where 128 is max volume)
+void AudioSystem::SetSoundVolume(SoundHandle sound, int volume)
+{
+    if(mHandleMap.find(sound) == mHandleMap.end())
+    {
+        SDL_Log("[AudioSystem] SetSoundVolume couldn't find handle %s", sound.GetDebugStr());
+        return;
+    }
+
+    int channel = mHandleMap[sound].mChannel;
+    Mix_Volume(channel, volume);
+}
+
 // Stops all sounds on all channels
 void AudioSystem::StopAllSounds()
 {
