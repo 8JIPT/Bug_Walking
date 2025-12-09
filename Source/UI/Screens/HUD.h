@@ -24,6 +24,8 @@ private:
     UIImage* mHeart1;
     UIImage* mHeart2;
     UIImage* mHeart3;
+    UIImage* mHeart4;
+    UIImage* mHeart5;
     UIText  *mScore;
     
     int mCurrentHealth;

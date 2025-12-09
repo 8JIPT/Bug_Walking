@@ -38,8 +38,8 @@ private:
     float mHitTimer = 0.0f; // used for invincibility frames (seconds)
     const float HIT_COOLDOWN = 1.5f; // invincibility duration after taking damage
 
-    int mHitPoints = 3;
-    int mMaxHitPoints = 3;
+    int mHitPoints = 5;
+    int mMaxHitPoints = 5;
 
     float mFireBallCooldown = 0.3f;
 

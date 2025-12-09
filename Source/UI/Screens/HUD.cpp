@@ -8,8 +8,8 @@
 
 HUD::HUD(class Game* game, const std::string& fontName)
     :UIScreen(game, fontName)
-    , mCurrentHealth(3)
-    , mPreviousHealth(3)
+    , mCurrentHealth(5)
+    , mPreviousHealth(5)
     , mHeartAnimTimer(0.0f)
     , mIsAnimatingHeart(false)
     , mAnimatingHeartIndex(-1)
@@ -21,6 +21,8 @@ HUD::HUD(class Game* game, const std::string& fontName)
     mHeart1 = AddImage("../Assets/HUD/heart1.png", Vector2(hudPos.x, hudPos.y), 2.0f);
     mHeart2 = AddImage("../Assets/HUD/heart1.png", Vector2(hudPos.x + heartSpacing, hudPos.y), 2.0f);
     mHeart3 = AddImage("../Assets/HUD/heart1.png", Vector2(hudPos.x + heartSpacing * 2, hudPos.y), 2.0f);
+    mHeart4 = AddImage("../Assets/HUD/heart1.png", Vector2(hudPos.x + heartSpacing * 3, hudPos.y), 2.0f);
+    mHeart5 = AddImage("../Assets/HUD/heart1.png", Vector2(hudPos.x + heartSpacing * 4, hudPos.y), 2.0f);
 }
 
 void HUD::Update(float deltaTime)
@@ -44,6 +46,8 @@ void HUD::UpdateHeartAnimation(float deltaTime)
             if (mAnimatingHeartIndex == 0) targetHeart = mHeart1;
             else if (mAnimatingHeartIndex == 1) targetHeart = mHeart2;
             else if (mAnimatingHeartIndex == 2) targetHeart = mHeart3;
+            else if (mAnimatingHeartIndex == 3) targetHeart = mHeart4;
+            else if (mAnimatingHeartIndex == 4) targetHeart = mHeart5;
             
             if (targetHeart)
             {
@@ -83,6 +87,16 @@ void HUD::SetHealth(int health)
         {
             mHeart3->SetTexture(GetGame()->GetRenderer()->GetTexture("../Assets/HUD/heart1.png"));
             mHeart3->SetIsVisible(true);
+        }
+        if (health >= 4 && mHeart4)
+        {
+            mHeart4->SetTexture(GetGame()->GetRenderer()->GetTexture("../Assets/HUD/heart1.png"));
+            mHeart4->SetIsVisible(true);
+        }
+        if (health >= 5 && mHeart5)
+        {
+            mHeart5->SetTexture(GetGame()->GetRenderer()->GetTexture("../Assets/HUD/heart1.png"));
+            mHeart5->SetIsVisible(true);
         }
     }
     

@@ -76,7 +76,6 @@ void Robot::OnProcessInput(const uint8_t* state)
         mIsRunning = true;
     }
     else {
-        // Stop immediately when no horizontal movement key is pressed
         Vector2 vel = mRigidBodyComponent->GetVelocity();
         vel.x = 0.0f;
         mRigidBodyComponent->SetVelocity(vel);
