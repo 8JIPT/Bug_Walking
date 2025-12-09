@@ -54,6 +54,7 @@ Menus do jogo e gameplay:
 - Robô personagem principal: https://nicopardo.itch.io/x-reploit-pack?download
 - Som do pulo: https://brackeysgames.itch.io/brackeys-platformer-bundle
 - Som de hit: https://brackeysgames.itch.io/brackeys-platformer-bundle
+- Som de 1 Hit Point Remaining: https://koki-sekiguchi.itch.io/emergency-alert-sound-effect
 - Mísseis: https://opengameart.org/content/custom-missiles
 - Som dos mísseis: https://ne-mene.itch.io/general-sound-pack
 - Inimigo 1: https://free-game-assets.itch.io/free-drones-pack-pixel-art
