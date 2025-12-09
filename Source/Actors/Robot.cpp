@@ -75,6 +75,12 @@ void Robot::OnProcessInput(const uint8_t* state)
         mScale.x = -1.0f;
         mIsRunning = true;
     }
+    else {
+        // Stop immediately when no horizontal movement key is pressed
+        Vector2 vel = mRigidBodyComponent->GetVelocity();
+        vel.x = 0.0f;
+        mRigidBodyComponent->SetVelocity(vel);
+    }
     if (state[SDL_SCANCODE_UP] && IsOnGround()){
         Vector2 vel = mRigidBodyComponent->GetVelocity();
         vel.y = mJumpSpeed;
