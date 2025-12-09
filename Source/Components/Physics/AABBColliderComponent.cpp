@@ -88,6 +88,9 @@ float AABBColliderComponent::DetectHorizontalCollision(RigidBodyComponent *rigid
     auto colliders = GetGame()->GetColliders();
     for (auto collider : colliders){
         if (collider == this || !collider->IsEnabled() || !Intersect(*collider)) continue;
+        
+        // Skip collision if both colliders belong to the same actor (self-collision)
+        if (mOwner == collider->GetOwner()) continue;
 
         float minOverlap = GetMinHorizontalOverlap(collider);
 
@@ -101,8 +104,29 @@ float AABBColliderComponent::DetectHorizontalCollision(RigidBodyComponent *rigid
             AABBColliderComponent* playerCollider = (mLayer == ColliderLayer::Player) ? this : collider;
             AABBColliderComponent* enemyCollider  = (mLayer == ColliderLayer::Enemy)  ? this : collider;
 
-            float playerMinV = playerCollider->GetMinVerticalOverlap(enemyCollider);
-            if (playerMinV > 0.0f) continue;
+            // Check if player is coming from above (stomping) - if so, skip horizontal collision damage
+            Vector2 playerMin = playerCollider->GetMin();
+            Vector2 playerMax = playerCollider->GetMax();
+            Vector2 enemyMin = enemyCollider->GetMin();
+            Vector2 enemyMax = enemyCollider->GetMax();
+            
+            Actor* enemyActor = enemyCollider->GetOwner();
+            Actor* playerActor = playerCollider->GetOwner();
+            
+            if (enemyActor && playerActor) {
+                // Get actual positions
+                Vector2 playerPos = playerActor->GetPosition();
+                Vector2 enemyPos = enemyActor->GetPosition();
+                
+                // Check if player is falling (attempting stomp)
+                RigidBodyComponent* playerRB = playerActor->GetComponent<RigidBodyComponent>();
+                bool isFalling = playerRB && playerRB->GetVelocity().y > 0.0f;
+                
+                // If player is above enemy OR falling (stomping attempt), skip horizontal damage
+                if (playerPos.y < enemyPos.y - 10.0f || isFalling) {
+                    continue;
+                }
+            }
 
             if (playerCollider->GetOwner()){
                 playerCollider->GetOwner()->OnHorizontalCollision(minOverlap, enemyCollider);
@@ -152,6 +176,9 @@ float AABBColliderComponent::DetectVertialCollision(RigidBodyComponent *rigidBod
 
     for (auto collider : colliders){
         if (collider == this || !collider->IsEnabled() || !Intersect(*collider)) continue;
+        
+        // Skip collision if both colliders belong to the same actor (self-collision)
+        if (mOwner == collider->GetOwner()) continue;
 
         float minOverlap = GetMinVerticalOverlap(collider);
         if (collider->GetLayer() == ColliderLayer::Blocks){

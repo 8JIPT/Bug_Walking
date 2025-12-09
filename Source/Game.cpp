@@ -36,7 +36,7 @@ Game::Game()
         ,mRenderer(nullptr)
         ,mTicksCount(0)
         ,mIsRunning(true)
-        ,mIsDebugging(false)
+        ,mIsDebugging(true)
         ,mUpdatingActors(false)
         ,mCameraPos(Vector2::Zero)
         ,mRobot(nullptr)
@@ -178,7 +178,7 @@ void Game::SetScene(GameScene nextScene)
             }
             break;
         }
-        case GameScene::Level1: {
+        case GameScene::Level: {
             // Reset camera to start position
             mCameraPos = Vector2::Zero;
             
@@ -248,7 +248,6 @@ int Game::LoadProgressData()
 {
     std::ifstream file("../Assets/Levels/progressData.txt");
     if (!file.is_open()) {
-        SDL_Log("Progress data file not found. Creating default (level 1).");
         std::ofstream outFile("../Assets/Levels/progressData.txt");
         if (outFile.is_open()) {
             outFile << "1";

@@ -57,6 +57,9 @@ private:
     float mGlitchTimer;
     float mGlitchDurationTimer;
     bool mIsInputLocked;
+    
+    // Stomp immunity - prevents damage from stomped enemy until Robot exits collision
+    class Actor* mStompedEnemy = nullptr;
 
     class RigidBodyComponent* mRigidBodyComponent;
     class AnimatorComponent* mNormalDraw;

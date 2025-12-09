@@ -25,22 +25,15 @@ Robot::Robot(Game* game, const float forwardSpeed, const float jumpSpeed)
 {
     mNormalDraw = new AnimatorComponent(this, "../Assets/Sprites/Robot/Character_SpriteSheet_RP1_free (40x40).png", "../Assets/Sprites/Robot/Robot.json", Game::TILE_SIZE * 2, Game::TILE_SIZE * 2, 100);
     mNormalDraw->SetOffset(Vector2(0, Game::TILE_SIZE * -0.4));
-    // idle: frames 0-4
     mNormalDraw->AddAnimation("idle", std::vector<int>{0,1,2,3,4});
-    // run: frames 5-12
     mNormalDraw->AddAnimation("run", std::vector<int>{5,6,7,8,9,10,11,12});
-    // shot: frames 13-14
     mNormalDraw->AddAnimation("shot", std::vector<int>{13,14});
-    // dead: frames 15-35
     mNormalDraw->AddAnimation("dead", std::vector<int>{15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35});
-    // jump: frames 36-39
     mNormalDraw->AddAnimation("jump", std::vector<int>{36,37,38,39});
     mNormalDraw->SetAnimFPS(10.0f);
     mNormalDraw->SetAnimation("idle");
-
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
     mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::TILE_SIZE * 0.8, Game::TILE_SIZE * 1.3, ColliderLayer::Player, false);
-
     SetRepairLevel(RepairLevel::Critical);
 }
 
@@ -104,17 +97,30 @@ void Robot::OnUpdate(float deltaTime)
         mNormalDraw->SetVisible(true);
     }
     mHitThisFrame = false;
-    if (mRigidBodyComponent->GetVelocity().y != 0.0f) SetOffGround();
+    if (mStompedEnemy) {
+        bool stillColliding = false;
+        if (mColliderComponent && mColliderComponent->IsEnabled()) {
+            auto colliders = GetGame()->GetColliders();
+            for (auto collider : colliders) {
+                if (collider->GetOwner() == mStompedEnemy && 
+                    mColliderComponent->Intersect(*collider)) {
+                    stillColliding = true;
+                    break;
+                }
+            }
+        }
+        if (!stillColliding) {
+            mStompedEnemy = nullptr;
+        }
+    }
     
-    // Check win condition (Y-based or X-based depending on level)
+    if (mRigidBodyComponent->GetVelocity().y != 0.0f) SetOffGround();
+
     float winY = GetGame()->GetWinConditionY();
     float winX = GetGame()->GetWinConditionX();
     bool wonByY = (winY >= 0 && mPosition.y <= winY);
     bool wonByX = (winX >= 0 && mPosition.x >= winX);
-    
     if ((wonByY || wonByX) && !mIsDead) {
-        SDL_Log("Robot reached win position! Y=%.0f (target %.0f) X=%.0f (target %.0f)", 
-                mPosition.y, winY, mPosition.x, winX);
         GetGame()->SetScene(GameScene::Win);
         return;
     }
@@ -128,7 +134,6 @@ void Robot::OnUpdate(float deltaTime)
         HandleGlitches(deltaTime);
     }
     ManageAnimations();
-    // Clamp Robot to level boundaries
     float levelWidth = GetGame()->GetLevelWidth() * Game::TILE_SIZE;
     float halfTile = 20.0f; // metade do tamanho do Robot
     if (mPosition.x < halfTile) {
@@ -163,7 +168,6 @@ void Robot::HandleGlitches(float deltaTime) {
         Vector2 vel = mRigidBodyComponent->GetVelocity();
         vel.x = 0.0f;
         mRigidBodyComponent->SetVelocity(vel);
-
         GetGame()->PlayGlitchChunk();
         SDL_Log("GLITCH: Input de movimento perdido!");
     }
@@ -172,26 +176,19 @@ void Robot::HandleGlitches(float deltaTime) {
 void Robot::HandleShooting() {
     if (mShootCooldownTimer > 0.0f) return;
     mShootCooldownTimer = mShootCooldown;
-
     float direction = mScale.x;
-
     Vector2 spawnPos = GetPosition();
     spawnPos.x += (25.0f) * direction;
     spawnPos.y += -3.0f;
-
     float roll = Random::GetFloat();
     if (roll < mShootFailChance) {
         SDL_Log("GLITCH: Arma falhou ao disparar!");
         new SmokeEffect(GetGame(), spawnPos, direction);
-
         GetGame()->PlayFailedShotChunk();
-
         return;
     }
-
     Bullet* bullet = new Bullet(GetGame(), direction);
     bullet->SetPosition(spawnPos);
-
     GetGame()->PlayShootChunk();
 }
 
@@ -216,16 +213,12 @@ void Robot::TakeDamage(int damage)
 {
     if (mIsDead || mHitTimer > 0.0f)
         return;
-
     mHitPoints -= damage;
-    SDL_Log("Robot took %d damage! HP: %d/%d", damage, mHitPoints, mMaxHitPoints);
-
     // Update HUD
     if (GetGame()->GetHUD())
     {
         GetGame()->GetHUD()->SetHealth(mHitPoints);
     }
-
     if (mHitPoints <= 0)
     {
         mHitPoints = 0;
@@ -233,7 +226,6 @@ void Robot::TakeDamage(int damage)
     }
     else
     {
-        // Start invincibility frames
         mHitTimer = HIT_COOLDOWN;
         mHitThisFrame = true;
     }
@@ -246,7 +238,6 @@ void Robot::Kill()
     mNormalDraw->SetAnimation("dead");
     mRigidBodyComponent->SetEnabled(false);
     mColliderComponent->SetEnabled(false);
-    SDL_Log("Killed");
 }
 
 void Robot::UpgradeRepairLevel() {
@@ -265,12 +256,15 @@ void Robot::OnHorizontalCollision(const float minOverlap, AABBColliderComponent*
 {
     if (!other || mHitThisFrame) return;
     if (other->GetLayer() == ColliderLayer::Enemy && mHitTimer <= 0.0f){
+        Actor* enemy = other->GetOwner();
+        if (enemy == mStompedEnemy) {
+            return;
+        }
         mHitThisFrame = true;
-        if (Actor* enemy = other->GetOwner()) {
+        if (enemy) {
             const char* enemyName = enemy->GetName();
             if (strcmp(enemyName, "Missile") == 0) {
                 enemy->Kill();
-                SDL_Log("Robot killed Missile on horizontal collision");
             }
         }
         TakeDamage(1);
@@ -280,7 +274,6 @@ void Robot::OnHorizontalCollision(const float minOverlap, AABBColliderComponent*
         if (item && strcmp(item->GetName(), "GoldRing") == 0) {
             GoldRing* ring = dynamic_cast<GoldRing*>(item);
             if (ring) {
-                SDL_Log("[Robot] Coletando GoldRing: aumentando RepairLevel e destruindo GoldRing");
                 UpgradeRepairLevel();
                 ring->SetState(ActorState::Destroy);
             }
@@ -307,27 +300,42 @@ void Robot::OnVerticalCollision(const float minOverlap, AABBColliderComponent* o
         // PowerUp(); // Se quiser implementar powerup para Robot
     }
     if (other->GetLayer() != ColliderLayer::Enemy) return;
+    
+    Actor* enemy = other->GetOwner();
+    if (!enemy) return;
+    
     Vector2 robotMin = mColliderComponent->GetMin();
     Vector2 robotMax = mColliderComponent->GetMax();
     float robotFeetY = robotMax.y;
     Vector2 enemyMin = other->GetMin();
     Vector2 enemyMax = other->GetMax();
     float enemyCenterY = (enemyMin.y + enemyMax.y) * 0.5f;
-    if (robotFeetY < enemyCenterY){
-        if (Actor* enemy = other->GetOwner()) enemy->TakeDamage(1);
+    Vector2 velocity = mRigidBodyComponent->GetVelocity();
+    bool isFalling = velocity.y > 0.0f;
+    if (robotFeetY < enemyCenterY && isFalling && minOverlap > 0){
+        // Stomp detected - let the enemy handle its own damage
+        enemy->OnVerticalCollision(minOverlap, mColliderComponent);
+        mStompedEnemy = enemy; // Grant immunity from this enemy for the time its still inside it
         Vector2 vel = mRigidBodyComponent->GetVelocity();
         vel.y = mJumpSpeed * -0.5f;
         mRigidBodyComponent->SetVelocity(vel);
         return;
     }
+    if (minOverlap < 0) {
+        return;
+    }
+    Vector2 enemyPos = enemy->GetPosition();
+    if (mPosition.y < enemyPos.y - 10.0f || isFalling) {
+        return;
+    }
+    if (mStompedEnemy == enemy) {
+        return;
+    }
     if (mHitTimer <= 0.0f) {
         mHitThisFrame = true;
-        if (Actor* enemy = other->GetOwner()) {
-            const char* enemyName = enemy->GetName();
-            if (strcmp(enemyName, "Missile") == 0) {
-                enemy->Kill();
-                SDL_Log("Robot killed Missile on vertical collision");
-            }
+        const char* enemyName = enemy->GetName();
+        if (strcmp(enemyName, "Missile") == 0) {
+            enemy->Kill();
         }
         TakeDamage(1);
     }

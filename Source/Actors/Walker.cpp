@@ -25,19 +25,12 @@ Walker::Walker(Game* game, const Vector2& spawnPosition, float moveSpeed, int ma
     , mPauseTime(3.0f)
     , mMovingRight(true)
     , mMode(WalkerMode::Idle)
-    , mAttackTimer(0.0f)
-    , mAttackCooldown(2.0f)
-    , mAttackCount(0)
-    , mIsAttacking(false)
-    , mAttackDuration(0.0f)
 {
     SetPosition(spawnPosition);
 
     mDrawComponent = new AnimatorComponent(this, "../Assets/Sprites/Walker/Walker.png", "../Assets/Sprites/Walker/Walker.json", Game::TILE_SIZE * 2, Game::TILE_SIZE, 100);
     mDrawComponent->AddAnimation("idle", std::vector<int>{16, 18, 19, 32, 15});
     mDrawComponent->AddAnimation("walk", std::vector<int>{17, 6, 22, 23, 24, 20});
-    mDrawComponent->AddAnimation("attack1", std::vector<int>{8, 9, 21, 25, 26, 27, 31});
-    mDrawComponent->AddAnimation("attack2", std::vector<int>{28, 29, 30, 0, 1, 2, 10});
     mDrawComponent->AddAnimation("dead", std::vector<int>{3, 14, 5, 4, 7});
     mDrawComponent->AddAnimation("damage", std::vector<int>{12, 13, 11});
     mDrawComponent->SetAnimFPS(10.0f);
@@ -45,13 +38,7 @@ Walker::Walker(Game* game, const Vector2& spawnPosition, float moveSpeed, int ma
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f, true);
 
-    mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::TILE_SIZE, Game::TILE_SIZE, 
-                                                   ColliderLayer::Enemy, false);
-
-    mTridentCollider = new AABBColliderComponent(this, Game::TILE_SIZE, 0, Game::TILE_SIZE, Game::TILE_SIZE, ColliderLayer::Enemy, false);
-    mTridentCollider->SetEnabled(false);
-    
-    SDL_Log("Walker spawned at (%.2f, %.2f)", spawnPosition.x, spawnPosition.y);
+    mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::TILE_SIZE, Game::TILE_SIZE, ColliderLayer::Enemy, false);
 }
 
 void Walker::OnUpdate(float deltaTime)
@@ -65,8 +52,6 @@ void Walker::OnUpdate(float deltaTime)
         }
         return;
     }
-
-    // Handle damage animation
     if (mTakingDamage)
     {
         mDamageTimer -= deltaTime;
@@ -109,7 +94,6 @@ void Walker::UpdateIdle(float deltaTime)
     {
         mMode = WalkerMode::Following;
         mDrawComponent->SetAnimation("walk");
-        SDL_Log("Walker detected player! Entering Following mode");
         return;
     }
     // Patrol behavior
@@ -118,7 +102,6 @@ void Walker::UpdateIdle(float deltaTime)
         mPauseTimer -= deltaTime;
         mRigidBodyComponent->SetVelocity(Vector2::Zero);
         mDrawComponent->SetAnimation("idle");
-        
         if (mPauseTimer <= 0.0f)
         {
             mMovingRight = !mMovingRight;
@@ -143,7 +126,6 @@ void Walker::UpdateIdle(float deltaTime)
             Vector2 velocity = mRigidBodyComponent->GetVelocity();
             velocity.x = mMovingRight ? mMoveSpeed : -mMoveSpeed;
             mRigidBodyComponent->SetVelocity(velocity);
-
             mScale.x = mMovingRight ? 1.0f : -1.0f;
         }
     }
@@ -157,7 +139,6 @@ void Walker::UpdateFollowing(float deltaTime)
         mMode = WalkerMode::Idle;
         return;
     }
-
     Vector2 playerPos = player->GetPosition();
     float horizontalDistance = Math::Abs(playerPos.x - mPosition.x);
     float verticalDistance = Math::Abs(playerPos.y - mPosition.y);
@@ -167,23 +148,17 @@ void Walker::UpdateFollowing(float deltaTime)
         mMode = WalkerMode::Battle;
         mDrawComponent->SetAnimation("idle");
         mRigidBodyComponent->SetVelocity(Vector2::Zero);
-        mAttackTimer = 0.0f;
-        SDL_Log("Walker entered Battle mode! (Attack pattern at: %d)", mAttackCount);
         return;
     }
-
     if (!CanSeePlayer())
     {
         mMode = WalkerMode::Idle;
         mDrawComponent->SetAnimation("idle");
-        SDL_Log("Walker lost sight of player, returning to Idle");
         return;
     }
-
-    // Move toward player (only horizontally)
+    // Move toward player
     float horizontalDiff = playerPos.x - mPosition.x;
     Vector2 velocity = mRigidBodyComponent->GetVelocity();
-    
     if (Math::Abs(horizontalDiff) > 15.0f)  // Dead zone
     {
         if (horizontalDiff > 0)
@@ -199,7 +174,6 @@ void Walker::UpdateFollowing(float deltaTime)
     }
     else
     {
-        // Player is directly above, stop horizontal movement but keep facing direction
         velocity.x = 0.0f;
     }
     mRigidBodyComponent->SetVelocity(velocity);
@@ -213,7 +187,6 @@ void Walker::UpdateBattle(float deltaTime)
         mMode = WalkerMode::Idle;
         return;
     }
-
     Vector2 playerPos = player->GetPosition();
     float horizontalDistance = Math::Abs(playerPos.x - mPosition.x);
     float verticalDistance = Math::Abs(playerPos.y - mPosition.y);
@@ -221,118 +194,27 @@ void Walker::UpdateBattle(float deltaTime)
     {
         mMode = WalkerMode::Following;
         mDrawComponent->SetAnimation("walk");
-        mTridentCollider->SetEnabled(false);
-        mIsAttacking = false;
-        SDL_Log("Walker exiting Battle mode, resuming Following");
         return;
     }
-
     float horizontalDiff = playerPos.x - mPosition.x;
     if (Math::Abs(horizontalDiff) > 10.0f)
     {
         mScale.x = (horizontalDiff > 0.0f) ? 1.0f : -1.0f;
     }
-
     Vector2 velocity = mRigidBodyComponent->GetVelocity();
-    velocity.x = 0.0f;
-    mRigidBodyComponent->SetVelocity(velocity);
-    
-    // Handle attack logic
-    if (mIsAttacking)
+    if (Math::Abs(horizontalDiff) > 10.0f)
     {
-        mAttackDuration += deltaTime;
-        
-        // Enable trident collider
-        float attackProgress = mAttackDuration / (7.0f / 10.0f);
-        if (attackProgress >= 0.4f && attackProgress <= 0.7f)
-        {
-            mTridentCollider->SetEnabled(true);
-            // Extended range for attack2
-            int offsetDistance = (mAttackCount == 2) ? (Game::TILE_SIZE * 2) : Game::TILE_SIZE;
-            if (mScale.x > 0)
-                mTridentCollider->SetOffset(offsetDistance, 0);
-            else
-                mTridentCollider->SetOffset(-offsetDistance, 0);
-        }
-        else
-        {
-            mTridentCollider->SetEnabled(false);
-        }
-        // Check if attack animation finished
-        if (mAttackDuration >= (7.0f / 10.0f))
-        {
-            mIsAttacking = false;
-            mTridentCollider->SetEnabled(false);
-            mAttackCount++;
-            if (mAttackCount >= 3)
-                mAttackCount = 0;
-            
-            mDrawComponent->SetAnimation("idle");
-            SDL_Log("Walker attack finished, attack count: %d", mAttackCount);
-        }
+        float direction = (horizontalDiff > 0.0f) ? 1.0f : -1.0f;
+        mScale.x = direction;
+        velocity.x = direction * 30.0f;
+        mDrawComponent->SetAnimation("walk");
     }
     else
     {
-        mAttackTimer += deltaTime;
-        if (mAttackTimer < 1.0f)
-        {
-            float horizontalDiff = playerPos.x - mPosition.x;
-            float direction;
-            
-            // If player is directly above (within 15 pixel threshold), pick a random direction
-            if (Math::Abs(horizontalDiff) < 15.0f)
-            {
-                if (mAttackTimer < 0.05f)
-                {
-                    direction = (Random::GetFloatRange(0.0f, 1.0f) > 0.5f) ? 1.0f : -1.0f;
-                    mScale.x = direction;
-                }
-                else
-                {
-                    direction = mScale.x;
-                }
-            }
-            else
-            {
-                direction = (horizontalDiff > 0.0f) ? 1.0f : -1.0f;
-                mScale.x = direction;
-            }
-            
-            Vector2 velocity = mRigidBodyComponent->GetVelocity();
-            velocity.x = direction * 30.0f;
-            mRigidBodyComponent->SetVelocity(velocity);
-            
-            mDrawComponent->SetAnimation("walk");
-        }
-        else
-        {
-            Vector2 velocity = mRigidBodyComponent->GetVelocity();
-            velocity.x = 0.0f;
-            mRigidBodyComponent->SetVelocity(velocity);
-            mDrawComponent->SetAnimation("idle");
-        }
-        
-        if (mAttackTimer >= mAttackCooldown)
-        {
-            mIsAttacking = true;
-            mAttackDuration = 0.0f;
-            mAttackTimer = 0.0f;
-            
-            // Play attack sound effect
-            GetGame()->GetAudio()->PlaySound("click5.wav");
-            
-            if (mAttackCount == 0 || mAttackCount == 1)
-            {
-                mDrawComponent->SetAnimation("attack1");
-                SDL_Log("Walker using attack1 (attack #%d)", mAttackCount + 1);
-            }
-            else if (mAttackCount == 2)
-            {
-                mDrawComponent->SetAnimation("attack2");
-                SDL_Log("Walker using attack2 (attack #%d)", mAttackCount + 1);
-            }
-        }
+        velocity.x = 0.0f;
+        mDrawComponent->SetAnimation("idle");
     }
+    mRigidBodyComponent->SetVelocity(velocity);
 }
 
 bool Walker::CanSeePlayer()
@@ -340,10 +222,8 @@ bool Walker::CanSeePlayer()
     Robot* player = GetGame()->GetPlayer();
     if (!player)
         return false;
-
     Vector2 playerPos = player->GetPosition();
     float distance = (playerPos - mPosition).Length();
-
     return distance <= DETECTION_RANGE;
 }
 
@@ -351,10 +231,7 @@ void Walker::TakeDamage(int damage)
 {
     if (mIsDying || mTakingDamage)
         return;
-
     mHitPoints -= damage;
-    SDL_Log("Walker took %d damage! HP: %d/%d", damage, mHitPoints, mMaxHitPoints);
-
     if (mHitPoints <= 0)
     {
         mHitPoints = 0;
@@ -374,15 +251,10 @@ void Walker::Kill()
 {
     if (mIsDying)
         return;
-
     mIsDying = true;
     mDrawComponent->SetAnimation("dead");
     mRigidBodyComponent->SetEnabled(false);
     mColliderComponent->SetEnabled(false);
-    if (mTridentCollider)
-        mTridentCollider->SetEnabled(false);
-
-    SDL_Log("Walker killed!");
 }
 
 void Walker::OnHorizontalCollision(const float minOverlap, AABBColliderComponent* other)
@@ -415,10 +287,9 @@ void Walker::OnVerticalCollision(const float minOverlap, AABBColliderComponent* 
 {
     if (mIsDying)
         return;
-
     if (other->GetLayer() == ColliderLayer::Player)
     {
-        if (minOverlap < 0.0f)
+        if (minOverlap > 0.0f)
         {
             TakeDamage(1);
         }

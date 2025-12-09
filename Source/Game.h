@@ -27,7 +27,7 @@ struct TiledTileInfo {
 enum class GameScene
 {
     MainMenu,
-    Level1,
+    Level,
     PauseMenu,
     GameOver,
     Win

@@ -39,6 +39,9 @@ public:
 
     void SetSize(int width, int height) { mWidth = width; mHeight = height;}
     void SetOffset(int dx, int dy) { mOffset = Vector2((float)dx, (float)dy); }
+    
+    void SetTag(const char* tag) { mTag = tag; }
+    const char* GetTag() const { return mTag; }
 
 private:
     float GetMinVerticalOverlap(AABBColliderComponent* b) const;
@@ -53,4 +56,5 @@ private:
     bool mIsStatic;
 
     ColliderLayer mLayer;
+    const char* mTag = nullptr;
 };

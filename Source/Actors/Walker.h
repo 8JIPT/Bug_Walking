@@ -57,16 +57,8 @@ private:
     static constexpr float ATTACK_DISTX = 80.0f;
     static constexpr float ATTACK_DISTY = 288.0f;
     
-    // Attack system
-    float mAttackTimer;
-    float mAttackCooldown;
-    int mAttackCount;           // Tracks attacks (0,1 = attack1, 2 = attack2)
-    bool mIsAttacking;
-    float mAttackDuration;
-    
     // Components
     class RigidBodyComponent* mRigidBodyComponent;
     class AABBColliderComponent* mColliderComponent;
-    class AABBColliderComponent* mTridentCollider;
     class AnimatorComponent* mDrawComponent;
 };

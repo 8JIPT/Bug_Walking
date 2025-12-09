@@ -25,7 +25,7 @@ Win::Win(class Game* game, const std::string& fontName)
                 if (mGame->CheckLevelExists(nextLevel)) {
                         mGame->SaveProgressData(nextLevel);
                         this->Close();
-                        new CrossFadeScreen(mGame, GameScene::Level1);
+                        new CrossFadeScreen(mGame, GameScene::Level);
                 } else {
                         SDL_Log("No more levels available. Returning to main menu.");
                         this->Close();
