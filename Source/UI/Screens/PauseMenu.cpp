@@ -40,14 +40,17 @@ PauseMenu::PauseMenu(class Game* game, const std::string& fontName)
 void PauseMenu::HandleKeyPress(int key){
     if (mButtons.empty()) return;
     if (key == SDLK_DOWN) {
+        mGame->GetAudio()->PlaySound("Minimalist4.wav");
         mButtons[mSelectedButtonIndex]->SetHighlighted(false);
         mSelectedButtonIndex = (mSelectedButtonIndex + 1) % mButtons.size();
         mButtons[mSelectedButtonIndex]->SetHighlighted(true);
     }else if (key == SDLK_UP) {
+        mGame->GetAudio()->PlaySound("Minimalist4.wav");
         mButtons[mSelectedButtonIndex]->SetHighlighted(false);
         mSelectedButtonIndex = (mSelectedButtonIndex - 1 + mButtons.size()) % mButtons.size();
         mButtons[mSelectedButtonIndex]->SetHighlighted(true);
     }else if (key == SDLK_RETURN || key == SDLK_KP_ENTER) {
+        mGame->GetAudio()->PlaySound("Retro9.wav");
         mButtons[mSelectedButtonIndex]->OnClick();
     }
 }

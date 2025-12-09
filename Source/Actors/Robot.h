@@ -21,6 +21,7 @@ public:
     void TakeDamage(int damage = 1) override;
     int GetHitPoints() const { return mHitPoints; }
     int GetMaxHitPoints() const { return mMaxHitPoints; }
+    RepairLevel GetRepairLevel() const { return mCurrentLevel; }
 
     void UpgradeRepairLevel();
 

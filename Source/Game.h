@@ -15,6 +15,7 @@
 #include "Renderer/Renderer.h"
 #include "AudioSystem.h"
 #include "Actors/Robot.h"
+#include "Actors/RepairLevel.h"
 
 struct TiledTileInfo {
     uint32_t id;       // real tile ID (-1 = empty)
@@ -72,14 +73,15 @@ public:
     class Robot* GetPlayer() { return mRobot; }
     class HUD* GetHUD() { return mHUD; }
     bool GetIsPaused() { return mIsPaused; }
+    int GetLevelWidth() const { return mLevelWidth; }
+    int GetLevelHeight() const { return mLevelHeight; }
+    float GetWinConditionY() const { return mWinConditionY; }
+    float GetWinConditionX() const { return mWinConditionX; }
 
     static const int WINDOW_WIDTH   = 960;
     static const int WINDOW_HEIGHT  = 768;
-    static const int LEVEL_WIDTH    = 30;
-    static const int LEVEL_HEIGHT   = 90;
     static const int TILE_SIZE      = 32;
     static const int SPAWN_DISTANCE = 400;
-    static const int WIN_Y          = 300; // Y coordinate to trigger win condition
     static const int FPS = 60;
 
     static const int EPS = 2;
@@ -111,6 +113,10 @@ public:
     void PlayGlitchChunk() const;
     void PlayFailedShotChunk() const;
 
+    int LoadProgressData();
+    void SaveProgressData(int levelNumber);
+    bool CheckLevelExists(int levelNumber);
+
 private:
     void ProcessInput();
     void UpdateGame(float deltaTime);
@@ -118,6 +124,7 @@ private:
     void GenerateOutput();
 
     // Level loading
+    void LoadLevelDimensions(int levelNumber);
     int **LoadLevel(const std::string& fileName, int width, int height);
     void BuildLevel(int** levelData, int width, int height);
 
@@ -165,10 +172,13 @@ private:
     bool mUpdatingActors;
     bool mIsPaused;
 
-    float mCameraLeftBoundary = 0.0f;
-
     // Game-specific
     class Robot *mRobot;
     class HUD *mHUD;
     int **mLevelData;
+    int mLevelWidth;
+    int mLevelHeight;
+    RepairLevel mSavedRepairLevel;
+    float mWinConditionY;
+    float mWinConditionX;
 };

@@ -100,6 +100,7 @@ void Chaser::UpdateSteering(float deltaTime)
     if (mMissileFireTimer >= mMissileFireRate)
     {
         // Normal missile
+        mGame->GetAudio()->PlaySound("Shoot5.wav");
         new Missile(GetGame(), mPosition, 100.0f, 5.0f, "../Assets/Sprites/Chaser/roc.png", Vector3(1.0f, 0.5f, 0.0f));
         SDL_Log("Chaser fired normal missile!");
         mMissileFireTimer = 0.0f;
@@ -153,6 +154,7 @@ void Chaser::UpdateBattle(float deltaTime)
     if (mMissileFireTimer >= mBattleMissileFireRate)
     {
         // Battle missile
+        mGame->GetAudio()->PlaySound("Shoot5.wav");
         new Missile(GetGame(), mPosition, 150.0f, 2.5f, "../Assets/Sprites/Chaser/storm_shadow.png", Vector3(1.0f, 0.0f, 0.5f));
         SDL_Log("Chaser fired fast battle missile!");
         mMissileFireTimer = 0.0f;

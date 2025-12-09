@@ -40,7 +40,7 @@ void Missile::OnUpdate(float deltaTime)
     }
     UpdateSteering(deltaTime);
     EmitFireTrail(deltaTime);
-    float bottomLimit = Game::LEVEL_HEIGHT * Game::TILE_SIZE + Game::TILE_SIZE;
+    float bottomLimit = GetGame()->GetLevelHeight() * Game::TILE_SIZE + Game::TILE_SIZE;
     if (mPosition.y > bottomLimit || mPosition.y < -Game::TILE_SIZE)
     {
         mState = ActorState::Destroy;

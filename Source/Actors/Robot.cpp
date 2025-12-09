@@ -106,13 +106,19 @@ void Robot::OnUpdate(float deltaTime)
     mHitThisFrame = false;
     if (mRigidBodyComponent->GetVelocity().y != 0.0f) SetOffGround();
     
-    // Check win condition
-    if (mPosition.y <= Game::WIN_Y && !mIsDead) {
-        SDL_Log("Robot reached win position!");
+    // Check win condition (Y-based or X-based depending on level)
+    float winY = GetGame()->GetWinConditionY();
+    float winX = GetGame()->GetWinConditionX();
+    bool wonByY = (winY >= 0 && mPosition.y <= winY);
+    bool wonByX = (winX >= 0 && mPosition.x >= winX);
+    
+    if ((wonByY || wonByX) && !mIsDead) {
+        SDL_Log("Robot reached win position! Y=%.0f (target %.0f) X=%.0f (target %.0f)", 
+                mPosition.y, winY, mPosition.x, winX);
         GetGame()->SetScene(GameScene::Win);
         return;
     }
-    if (mPosition.y > Game::LEVEL_HEIGHT * Game::TILE_SIZE) {
+    if (mPosition.y > GetGame()->GetLevelHeight() * Game::TILE_SIZE) {
         Kill();
     }
     if (mShootCooldownTimer > 0.0f) {
@@ -123,7 +129,7 @@ void Robot::OnUpdate(float deltaTime)
     }
     ManageAnimations();
     // Clamp Robot to level boundaries
-    float levelWidth = Game::LEVEL_WIDTH * Game::TILE_SIZE;
+    float levelWidth = GetGame()->GetLevelWidth() * Game::TILE_SIZE;
     float halfTile = 20.0f; // metade do tamanho do Robot
     if (mPosition.x < halfTile) {
         mPosition.x = halfTile;

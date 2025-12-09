@@ -26,9 +26,15 @@ MainMenu::MainMenu(class Game* game, const std::string& fontName)
         }, Vector2(centerX, centerY), 1.0f, 0.0f, 32, 300, 110);
         startButton->SetTextColor(Color::White);
 
+        //reset save button
+        UIButton* resetButton = AddButton("Reset Save", [game = mGame](){
+            game->SaveProgressData(1);
+        }, Vector2(centerX, centerY + 100.0f), 1.0f, 0.0f, 32, 300, 110);
+        resetButton->SetTextColor(Color::White);
+
         //quit button
-        //AddRect(Vector2(centerX, centerY + 100.0f), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));
-        UIButton* quitButton = AddButton("Quit",[game = mGame](){game->Quit();}, Vector2(centerX, centerY + 100.0f), 1.0f, 0.0f, 32, 300, 110);
+        //AddRect(Vector2(centerX, centerY + 200.0f), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+        UIButton* quitButton = AddButton("Quit",[game = mGame](){game->Quit();}, Vector2(centerX, centerY + 200.0f), 1.0f, 0.0f, 32, 300, 110);
         quitButton->SetTextColor(Color::White);
 }
 
@@ -36,14 +42,17 @@ void MainMenu::HandleKeyPress(int key)
 {
         if (mButtons.empty()) return;
         if (key == SDLK_DOWN){
+                mGame->GetAudio()->PlaySound("Minimalist4.wav");
                 mButtons[mSelectedButtonIndex]->SetHighlighted(false);
                 mSelectedButtonIndex = (mSelectedButtonIndex + 1) % mButtons.size();
                 mButtons[mSelectedButtonIndex]->SetHighlighted(true);
         } else if (key == SDLK_UP){
+                mGame->GetAudio()->PlaySound("Minimalist4.wav");
                 mButtons[mSelectedButtonIndex]->SetHighlighted(false);
                 mSelectedButtonIndex = (mSelectedButtonIndex - 1 + mButtons.size()) % mButtons.size();
                 mButtons[mSelectedButtonIndex]->SetHighlighted(true);
         } else if (key == SDLK_RETURN || key == SDLK_KP_ENTER){
+                mGame->GetAudio()->PlaySound("Retro9.wav");
                 mButtons[mSelectedButtonIndex]->OnClick();
         }
 }

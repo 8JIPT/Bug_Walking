@@ -96,7 +96,7 @@ void Walker::OnUpdate(float deltaTime)
     }
 
     // Check if fell off the world
-    float bottomLimit = Game::LEVEL_HEIGHT * Game::TILE_SIZE + Game::TILE_SIZE;
+    float bottomLimit = GetGame()->GetLevelHeight() * Game::TILE_SIZE + Game::TILE_SIZE;
     if (mPosition.y > bottomLimit)
     {
         Kill();
@@ -317,6 +317,10 @@ void Walker::UpdateBattle(float deltaTime)
             mIsAttacking = true;
             mAttackDuration = 0.0f;
             mAttackTimer = 0.0f;
+            
+            // Play attack sound effect
+            GetGame()->GetAudio()->PlaySound("click5.wav");
+            
             if (mAttackCount == 0 || mAttackCount == 1)
             {
                 mDrawComponent->SetAnimation("attack1");

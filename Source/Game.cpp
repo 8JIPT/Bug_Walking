@@ -46,6 +46,11 @@ Game::Game()
         ,mIsPaused(false)
         ,mIsSceneTransitioning(false)
         ,mMusicHandle(SoundHandle::Invalid)
+        ,mLevelWidth(30)
+        ,mLevelHeight(90)
+        ,mSavedRepairLevel(RepairLevel::Critical)
+        ,mWinConditionY(-1.0f)
+        ,mWinConditionX(-1.0f)
 {
 
 }
@@ -107,12 +112,18 @@ bool Game::Initialize()
 void Game::InitializeActors()
 {
     // Load and build level for playing scene
-    mLevelData = LoadLevel("../Assets/Levels/level1/level1.csv", LEVEL_WIDTH, LEVEL_HEIGHT);
-    if (mLevelData) BuildLevel(mLevelData, LEVEL_WIDTH, LEVEL_HEIGHT);
+    mLevelData = LoadLevel("../Assets/Levels/level2/level2.csv", mLevelWidth, mLevelHeight);
+    if (mLevelData) BuildLevel(mLevelData, mLevelWidth, mLevelHeight);
 }
 
 void Game::UnloadScene()
 {
+    // Save robot's repair level before destroying
+    if (mRobot) {
+        mSavedRepairLevel = mRobot->GetRepairLevel();
+        SDL_Log("Saving Robot repair level: %d", static_cast<int>(mSavedRepairLevel));
+    }
+
     // Set all actors to destroy so they will be deleted in UpdateActors
     for (auto* actor : mActors) {
         actor->SetState(ActorState::Destroy);
@@ -135,7 +146,7 @@ void Game::UnloadScene()
 
     // Delete level data (if any)
     if (mLevelData) {
-        for (int i = 0; i < LEVEL_HEIGHT; ++i) {
+        for (int i = 0; i < mLevelHeight; ++i) {
             delete[] mLevelData[i];
         }
         delete[] mLevelData;
@@ -158,6 +169,9 @@ void Game::SetScene(GameScene nextScene)
     switch (nextScene) {
         case GameScene::MainMenu: {
             auto* menu = new MainMenu(this, "../Assets/Fonts/Silver.ttf");
+            // Reset repair level when returning to main menu
+            mSavedRepairLevel = RepairLevel::Critical;
+            SDL_Log("Reset repair level to Critical");
             // Start music if not already playing
             if (mMusicHandle == SoundHandle::Invalid || mAudio->GetSoundState(mMusicHandle) != SoundState::Playing) {
                 mMusicHandle = mAudio->PlaySound("S31-The Gears of Progress.ogg", true);
@@ -167,11 +181,17 @@ void Game::SetScene(GameScene nextScene)
         case GameScene::Level1: {
             // Reset camera to start position
             mCameraPos = Vector2::Zero;
-            mCameraLeftBoundary = 0.0f;
+            
+            // Load current level from progress data
+            int currentLevel = LoadProgressData();
+            LoadLevelDimensions(currentLevel);
+            
+            std::string level = "level" + std::to_string(currentLevel);
+            std::string levelPath = "../Assets/Levels/" + level + "/" + level + ".csv";
             
             // Initialize level and HUD
-            mLevelData = LoadLevel("../Assets/Levels/level1/level1.csv", LEVEL_WIDTH, LEVEL_HEIGHT);
-            if (mLevelData) BuildLevel(mLevelData, LEVEL_WIDTH, LEVEL_HEIGHT);
+            mLevelData = LoadLevel(levelPath, mLevelWidth, mLevelHeight);
+            if (mLevelData) BuildLevel(mLevelData, mLevelWidth, mLevelHeight);
 
             mHUD = new HUD(this, "../Assets/Fonts/Silver.ttf");
             if (mRobot && mHUD)
@@ -192,7 +212,7 @@ void Game::SetScene(GameScene nextScene)
         }
         case GameScene::Win: {
             auto* winScreen = new Win(this, "../Assets/Fonts/Silver.ttf");
-            if (mAudio) mAudio->StopSound(mMusicHandle);
+            //if (mAudio) mAudio->StopSound(mMusicHandle);
             break;
         }
         default:
@@ -201,6 +221,76 @@ void Game::SetScene(GameScene nextScene)
     }
 
     mIsSceneTransitioning = false;
+}
+
+void Game::LoadLevelDimensions(int levelNumber)
+{
+    std::string level = "level" + std::to_string(levelNumber);
+    std::string dimensionsPath = "../Assets/Levels/" + level + "/dimensions.txt";
+    
+    std::ifstream file(dimensionsPath);
+    if (!file.is_open()) {
+        SDL_Log("Dimensions file not found for level %d. Using defaults (30x90).", levelNumber);
+        mLevelWidth = 30;
+        mLevelHeight = 90;
+        mWinConditionY = -1.0f;
+        mWinConditionX = -1.0f;
+        return;
+    }
+    
+    file >> mLevelWidth >> mLevelHeight >> mWinConditionY >> mWinConditionX;
+    file.close();
+    
+    SDL_Log("Loaded level %d dimensions: %dx%d, Win: Y=%.0f X=%.0f", levelNumber, mLevelWidth, mLevelHeight, mWinConditionY, mWinConditionX);
+}
+
+int Game::LoadProgressData()
+{
+    std::ifstream file("../Assets/Levels/progressData.txt");
+    if (!file.is_open()) {
+        SDL_Log("Progress data file not found. Creating default (level 1).");
+        std::ofstream outFile("../Assets/Levels/progressData.txt");
+        if (outFile.is_open()) {
+            outFile << "1";
+            outFile.close();
+        }
+        return 1;
+    }
+    
+    int levelNumber = 1;
+    file >> levelNumber;
+    file.close();
+    
+    SDL_Log("Loaded progress data: Level %d", levelNumber);
+    return levelNumber;
+}
+
+void Game::SaveProgressData(int levelNumber)
+{
+    std::ofstream file("../Assets/Levels/progressData.txt");
+    if (!file.is_open()) {
+        SDL_Log("Failed to save progress data!");
+        return;
+    }
+    
+    file << levelNumber;
+    file.close();
+    SDL_Log("Saved progress data: Level %d", levelNumber);
+}
+
+bool Game::CheckLevelExists(int levelNumber)
+{
+    std::string level = "level" + std::to_string(levelNumber);
+    std::string levelPath = "../Assets/Levels/" + level + "/" + level + ".csv";
+    
+    std::ifstream file(levelPath);
+    bool exists = file.is_open();
+    if (file.is_open()) {
+        file.close();
+    }
+    
+    SDL_Log("Checking level %d: %s", levelNumber, exists ? "exists" : "not found");
+    return exists;
 }
 
 int **Game::LoadLevel(const std::string& fileName, int width, int height)
@@ -264,6 +354,9 @@ void Game::BuildLevel(int** levelData, int width, int height){
                 case 222:{//Player
                     mRobot = new Robot(this);
                     mRobot->SetPosition(position);
+                    // Restore saved repair level
+                    mRobot->SetRepairLevel(mSavedRepairLevel);
+                    SDL_Log("Restored Robot repair level: %d", static_cast<int>(mSavedRepairLevel));
                     break;
                 }
                 case 237: {//Chaser
@@ -278,7 +371,7 @@ void Game::BuildLevel(int** levelData, int width, int height){
                 default:
                     // For regular tiles, use the CSV value directly for the filename
                     std::string blockAddr = "/Free Industrial Zone Tileset/1 Tiles/IndustrialTile_";
-                    if (info.id < 10) blockAddr += "0" + std::to_string(info.id + 1) + ".png";
+                    if (info.id < 9) blockAddr += "0" + std::to_string(info.id + 1) + ".png";
                     else blockAddr += std::to_string(info.id + 1) + ".png";
                     block = new Block(this, baseAddr + blockAddr);
                     block->SetPosition(position);
@@ -402,11 +495,15 @@ void Game::ProcessInput()
         }
     }
 
-    const Uint8* state = SDL_GetKeyboardState(nullptr);
-
-    for (auto actor : mActors)
+    // Only process actor input when not paused
+    if (!mIsPaused)
     {
-        actor->ProcessInput(state);
+        const Uint8* state = SDL_GetKeyboardState(nullptr);
+
+        for (auto actor : mActors)
+        {
+            actor->ProcessInput(state);
+        }
     }
 }
 
@@ -495,13 +592,8 @@ void Game::UpdateCamera()
     float targetX = robotX - WINDOW_WIDTH / 2.0f + TILE_SIZE / 2.0f;
     float targetY = robotY - WINDOW_HEIGHT / 2.0f + TILE_SIZE / 2.0f;
 
-    if (targetX > mCameraLeftBoundary)
-        mCameraLeftBoundary = targetX;
-
-    targetX = mCameraLeftBoundary;
-
-    float levelWidthInPixels = LEVEL_WIDTH * TILE_SIZE;
-    float levelHeightInPixels = LEVEL_HEIGHT * TILE_SIZE;
+    float levelWidthInPixels = mLevelWidth * TILE_SIZE;
+    float levelHeightInPixels = mLevelHeight * TILE_SIZE;
 
     if (targetX < 0) targetX = 0;
     if (targetX > levelWidthInPixels - WINDOW_WIDTH) targetX = levelWidthInPixels - WINDOW_WIDTH;
@@ -579,9 +671,9 @@ void Game::GenerateOutput()
     if (mRobot) {
         Texture* bgTexture = mRenderer->GetTexture("../Assets/Sprites/Background.png");
         if (bgTexture){
-            Vector2 size(LEVEL_WIDTH * TILE_SIZE, LEVEL_HEIGHT * TILE_SIZE);
+            Vector2 size(mLevelWidth * TILE_SIZE, mLevelHeight * TILE_SIZE);
 
-            Vector2 topLeft = Vector2(LEVEL_WIDTH * TILE_SIZE / 2.0f, LEVEL_HEIGHT * TILE_SIZE / 2.0f);
+            Vector2 topLeft = Vector2(mLevelWidth * TILE_SIZE / 2.0f, mLevelHeight * TILE_SIZE / 2.0f);
             mRenderer->DrawTexture(topLeft, size, 0.0f, Vector3::One, bgTexture, Vector4::UnitRect, mCameraPos, false);
         }
     }
@@ -622,7 +714,7 @@ void Game::Shutdown()
 
     // Delete level data if still present
     if (mLevelData) {
-        for (int i = 0; i < LEVEL_HEIGHT; ++i) {
+        for (int i = 0; i < mLevelHeight; ++i) {
             delete[] mLevelData[i];
         }
         delete[] mLevelData;
