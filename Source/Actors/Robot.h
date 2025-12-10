@@ -33,6 +33,8 @@ private:
     bool mIsRunning;
     bool mIsDead;
 
+    float mJumpCutoff;
+
     // Glitch / damage
     bool mHitThisFrame = false;
     float mHitTimer = 0.0f; // used for invincibility frames (seconds)

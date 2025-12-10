@@ -23,6 +23,7 @@
 #include "Actors/Walker.h"
 #include "Actors/WalkerSpawner.h"
 #include "Actors/GoldRing.h"
+#include "Actors/Elevator.h"
 #include "AudioSystem.h"
 #include "Actors/Boss.h"
 #include "UI/Screens/HUD.h"
@@ -238,7 +239,9 @@ void Game::SetScene(GameScene nextScene)
         case GameScene::PauseMenu: {
             auto* pauseMenu = new PauseMenu(this, "../Assets/Fonts/Silver.ttf");
             if (mAudio) mAudio->PauseSound(mMusicHandle);
-            if (mAudio) mAudio->PauseSound(mEmergencyAlertHandle);
+            if (mAudio && mEmergencyAlertHandle != SoundHandle::Invalid) {
+                mAudio->PauseSound(mEmergencyAlertHandle);
+            }
             break;
         }
         case GameScene::GameOver: {
@@ -401,6 +404,26 @@ void Game::BuildLevel(int** levelData, int width, int height){
                 }
                 case 238: {//Walker
                     WalkerSpawner* spawnerW = new WalkerSpawner(this, position);
+                    break;
+                }
+                case 239: {//Elevator
+                    Elevator* elevator = new Elevator(this);
+                    elevator->SetPosition(position);
+                    break;
+                }
+                case 240: {
+                     block = new Block (this, "../Assets/Sprites/Elevator/floor1.png", false, 0.7f);
+                     block->SetPosition(position);
+                    break;
+                }
+                case 241: {
+                     block = new Block (this, "../Assets/Sprites/Elevator/floor2.png", false, 0.7f);
+                     block->SetPosition(position);
+                    break;
+                }
+                case 242: {
+                     block = new Block (this, "../Assets/Sprites/Elevator/floor3.png", false, 0.7f);
+                     block->SetPosition(position);
                     break;
                 }
                 default:

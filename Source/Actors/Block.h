@@ -9,20 +9,15 @@
 class Block : public Actor
 {
 public:
-    explicit Block(Game* game, const std::string &texturePath, bool canBeBumped = false, bool canCreateMushroom = false);
+    explicit Block(Game* game, const std::string &texturePath, bool hasCollision = true, float scale = 1.0f);
 
     void Kill() override;
     void OnUpdate(float deltaTime) override;
     void SetFlip(bool flipH, bool flipV, bool flipD);
-    bool GetCanBeBumped() const {return mCanBeBumped;}
 private:
     Vector2 mStartPos;
-    bool mBumped;
-    float mBumpOffset;
-    float mBumpSpeed;
-    float mMaxBump;
-    bool mCanBeBumped;
-    bool mCanCreateMushroom;
+    bool mHasCollision;
+    float mScale;
 
     class AnimatorComponent* mDrawComponent;
 };
