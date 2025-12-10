@@ -196,6 +196,7 @@ void Game::SetScene(GameScene nextScene)
             
             // Load current level from progress data
             int currentLevel = LoadProgressData();
+            mCurrentLevel = currentLevel;
             LoadLevelDimensions(currentLevel);
             
             std::string level = "level" + std::to_string(currentLevel);
@@ -212,11 +213,18 @@ void Game::SetScene(GameScene nextScene)
             }
 
             // Boss será spawnado no BuildLevel via tile ID 243
-            // Mostrar barra de vida do Boss se ele existir
-            if (mBoss && mHUD)
+            // Mostrar barra de vida do Boss somente no nível 3 (se existir)
+            if (mHUD)
             {
-                mHUD->ShowBossHealthBar(true);
-                mHUD->SetBossHealth(50, 50);
+                if (mCurrentLevel == 3 && mBoss)
+                {
+                    mHUD->ShowBossHealthBar(true);
+                    mHUD->SetBossHealth(50, 50);
+                }
+                else
+                {
+                    mHUD->ShowBossHealthBar(false);
+                }
             }
             break;
         }
@@ -593,11 +601,15 @@ void Game::UpdateGame(float deltaTime)
             return;
         }
         
-        // Atualizar vida do Boss no HUD (Level 3)
-        if (mBoss && mHUD) {
+        // Atualizar vida do Boss no HUD (apenas Level 3)
+        if (mBoss && mHUD && mCurrentLevel == 3) {
             mHUD->SetBossHealth(mBoss->GetHitPoints(), 50);
         }
-        
+        // Ocultar barra se não há boss
+        if (!mBoss && mHUD) {
+            mHUD->ShowBossHealthBar(false);
+        }
+
         // Verificar vitória no Level 3 (Boss morto)
         if (mBoss && mBoss->GetState() == ActorState::Destroy) {
             SetScene(GameScene::Win);

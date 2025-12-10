@@ -19,6 +19,9 @@ UIRect::~UIRect()
 
 void UIRect::Draw(class Shader* shader)
 {
+    // Não desenhar se invisível
+    if (!mIsVisible) return;
+
     // Scale the quad by the width/height of texture
     Matrix4 scaleMat = Matrix4::CreateScale(mSize.x * mScale, mSize.y * mScale, 1.0f);
 

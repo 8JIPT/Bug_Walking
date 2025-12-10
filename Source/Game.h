@@ -79,6 +79,7 @@ public:
     int GetLevelHeight() const { return mLevelHeight; }
     float GetWinConditionY() const { return mWinConditionY; }
     float GetWinConditionX() const { return mWinConditionX; }
+    int GetCurrentLevel() const { return mCurrentLevel; }
 
     static const int WINDOW_WIDTH   = 960;
     static const int WINDOW_HEIGHT  = 768;
@@ -185,4 +186,5 @@ private:
     RepairLevel mSavedRepairLevel;
     float mWinConditionY;
     float mWinConditionX;
+    int mCurrentLevel; // nível atual carregado
 };
