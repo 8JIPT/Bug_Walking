@@ -16,7 +16,7 @@ IntroScene::IntroScene(Game* game, const std::string& fontName)
 {
     mBackground = AddRect(Vector2(Game::WINDOW_WIDTH/2, Game::WINDOW_HEIGHT/2),
                           Vector2(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT));
-    mBackground->SetColor(Vector4(0.6f, 0.0f, 0.0f, 1.0f)); // vermelho alerta
+    mBackground->SetColor(Vector4(0.3f, 0.0f, 0.0f, 1.0f)); // vermelho alerta
 
     mFlashRect = AddRect(Vector2(Game::WINDOW_WIDTH/2, Game::WINDOW_HEIGHT/2),
                          Vector2(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT));
@@ -30,7 +30,7 @@ IntroScene::IntroScene(Game* game, const std::string& fontName)
                               1.0f, 0.0f, 40, wrapLimit);
 
     mTextDisplay->SetTextColor(Vector3(1.0f, 1.0f, 1.0f));
-    mTextDisplay->SetBackgroundColor(Vector4(0.6f, 0.0f, 0.0f, 1.0f));
+    mTextDisplay->SetBackgroundColor(Vector4(0.3f, 0.0f, 0.0f, 1.0f));
 
     // roteiro
     mDialogueLines.push_back("\nALERT!\nEARTH IS UNDER PLANETARY SIEGE\nUNKNOWN HOSTILES DETECTED");
