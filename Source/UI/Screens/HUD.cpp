@@ -34,7 +34,8 @@ HUD::HUD(class Game* game, const std::string& fontName)
     Vector2 bossBarPos(Game::WINDOW_WIDTH / 2.0f, 50.0f);
     float barWidth = 300.0f;
     float barHeight = 20.0f;
-    
+    float borderThickness = 3.0f;
+
     // Fundo da barra (vermelho escuro)
     mBossHealthBarBg = AddRect(bossBarPos, Vector2(barWidth, barHeight));
     mBossHealthBarBg->SetColor(Vector4(0.4f, 0.0f, 0.0f, 1.0f));
@@ -44,6 +45,28 @@ HUD::HUD(class Game* game, const std::string& fontName)
     mBossHealthBar = AddRect(bossBarPos, Vector2(barWidth, barHeight));
     mBossHealthBar->SetColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
     mBossHealthBar->SetIsVisible(false);
+
+    // Bordas
+    Vector2 topPos = bossBarPos + Vector2(0.0f, -barHeight / 2.0f - borderThickness / 2.0f);
+    Vector2 bottomPos = bossBarPos + Vector2(0.0f, barHeight / 2.0f + borderThickness / 2.0f);
+    Vector2 leftPos = bossBarPos + Vector2(-barWidth / 2.0f - borderThickness / 2.0f, 0.0f);
+    Vector2 rightPos = bossBarPos + Vector2(barWidth / 2.0f + borderThickness / 2.0f, 0.0f);
+
+    mBossBorderTop = AddRect(topPos, Vector2(barWidth + borderThickness * 2.0f, borderThickness));
+    mBossBorderBottom = AddRect(bottomPos, Vector2(barWidth + borderThickness * 2.0f, borderThickness));
+    mBossBorderLeft = AddRect(leftPos, Vector2(borderThickness, barHeight + borderThickness * 2.0f));
+    mBossBorderRight = AddRect(rightPos, Vector2(borderThickness, barHeight + borderThickness * 2.0f));
+
+    Vector4 borderColor = Vector4(0.9f, 0.9f, 0.9f, 1.0f);
+    mBossBorderTop->SetColor(borderColor);
+    mBossBorderBottom->SetColor(borderColor);
+    mBossBorderLeft->SetColor(borderColor);
+    mBossBorderRight->SetColor(borderColor);
+
+    mBossBorderTop->SetIsVisible(false);
+    mBossBorderBottom->SetIsVisible(false);
+    mBossBorderLeft->SetIsVisible(false);
+    mBossBorderRight->SetIsVisible(false);
 }
 
 HUD::~HUD()
@@ -143,17 +166,29 @@ void HUD::SetBossHealth(int health, int maxHealth)
 {
     if (!mBossHealthBarVisible) return;
     
-    // Calcular largura da barra baseada na porcentagem de vida
     float percentage = static_cast<float>(health) / static_cast<float>(maxHealth);
     float currentWidth = mMaxBossBarWidth * percentage;
     
-    // Atualizar tamanho da barra
     mBossHealthBar->SetSize(Vector2(currentWidth, 20.0f));
     
-    // Ajustar posição para manter centralizada
     Vector2 centerPos(Game::WINDOW_WIDTH / 2.0f, 50.0f);
     float offset = (mMaxBossBarWidth - currentWidth) / 2.0f;
     mBossHealthBar->SetOffset(Vector2(centerPos.x - offset, centerPos.y));
+
+    // Atualizar posições das bordas para manter centralização
+    float barWidth = mMaxBossBarWidth;
+    float barHeight = 20.0f;
+    float borderThickness = 3.0f;
+
+    Vector2 topPos = centerPos + Vector2(0.0f, -barHeight / 2.0f - borderThickness / 2.0f);
+    Vector2 bottomPos = centerPos + Vector2(0.0f, barHeight / 2.0f + borderThickness / 2.0f);
+    Vector2 leftPos = centerPos + Vector2(-barWidth / 2.0f - borderThickness / 2.0f, 0.0f);
+    Vector2 rightPos = centerPos + Vector2(barWidth / 2.0f + borderThickness / 2.0f, 0.0f);
+
+    if (mBossBorderTop) mBossBorderTop->SetOffset(topPos);
+    if (mBossBorderBottom) mBossBorderBottom->SetOffset(bottomPos);
+    if (mBossBorderLeft) mBossBorderLeft->SetOffset(leftPos);
+    if (mBossBorderRight) mBossBorderRight->SetOffset(rightPos);
 }
 
 void HUD::ShowBossHealthBar(bool show)
@@ -161,6 +196,10 @@ void HUD::ShowBossHealthBar(bool show)
     mBossHealthBarVisible = show;
     mBossHealthBarBg->SetIsVisible(show);
     mBossHealthBar->SetIsVisible(show);
+    if (mBossBorderTop) mBossBorderTop->SetIsVisible(show);
+    if (mBossBorderBottom) mBossBorderBottom->SetIsVisible(show);
+    if (mBossBorderLeft) mBossBorderLeft->SetIsVisible(show);
+    if (mBossBorderRight) mBossBorderRight->SetIsVisible(show);
 }
 
 void HUD::UpdateRepairState(RepairLevel level)

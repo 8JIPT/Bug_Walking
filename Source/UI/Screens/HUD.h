@@ -43,6 +43,11 @@ private:
     // Boss health bar
     UIRect* mBossHealthBarBg;
     UIRect* mBossHealthBar;
+    // Borda da barra do boss (linhas)
+    UIRect* mBossBorderTop;
+    UIRect* mBossBorderBottom;
+    UIRect* mBossBorderLeft;
+    UIRect* mBossBorderRight;
     bool mBossHealthBarVisible;
     float mMaxBossBarWidth;
 
