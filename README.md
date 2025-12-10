@@ -18,7 +18,9 @@ O título do jogo é **BugWalking** (em referência jocosa à música *Smooth Cr
 
 O objetivo principal é restaurar gradualmente suas funcionalidades e enfrentar as invenções corrompidas do laboratório. No início, movimentos, ataques e defesas têm comportamento probabilístico e imprevisível, reforçando o tema de caos e mau funcionamento. Conforme o jogador avança, itens encontrados nas fases corrigem cada habilidade, permitindo um controle progressivamente mais consistente e preciso.
 
-O jogador vence ao alcançar o final do nível e perde ao esgotar a barra de vida ou falhar nos desafios de plataforma.
+O jogador vence ao alcançar o final do nível, até alcançar a fase do Boss e derrotá-lo e perde ao esgotar a barra de vida ou falhar nos desafios de plataforma.
+
+**Link de demonstração do jogo:** https://www.youtube.com/watch?v=wR3MYSquXMY
 
 ---
 
