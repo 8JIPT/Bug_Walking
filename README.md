@@ -52,6 +52,7 @@ Menus do jogo e gameplay:
 
 # Créditos dos Assets Utilizados
 - Robô personagem principal: https://nicopardo.itch.io/x-reploit-pack?download
+- Laser: https://nicopardo.itch.io/x-reploit-pack?download
 - Som do pulo: https://brackeysgames.itch.io/brackeys-platformer-bundle
 - Som de hit: https://brackeysgames.itch.io/brackeys-platformer-bundle
 - Som de 1 Hit Point Remaining: https://koki-sekiguchi.itch.io/emergency-alert-sound-effect
@@ -69,4 +70,5 @@ Menus do jogo e gameplay:
 - Som da falha do disparo: https://pixabay.com/sound-effects/empty-gun-shot-6209/
 - Sprite da fumaça: https://opengameart.org/content/fire-smoke-animations
 - Sons dos Menus: https://cyrex-studios.itch.io/universal-ui-soundpack
+- Elevator: https://pixel-assembly.itch.io/animated-elevator
 - Logo: IA

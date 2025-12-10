@@ -412,7 +412,7 @@ void Game::BuildLevel(int** levelData, int width, int height){
                 }
                 case 243: {//Boss
                     mBoss = new Boss(this, position, 80.0f, 50);
-                    mBoss->SetScale(Vector2(2.5f, 2.5f));
+                    mBoss->SetScale(Vector2(1.5f, 1.5f));
                     break;
                 }
                 default:
