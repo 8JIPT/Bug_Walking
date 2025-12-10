@@ -24,6 +24,7 @@
 #include "Actors/WalkerSpawner.h"
 #include "Actors/GoldRing.h"
 #include "AudioSystem.h"
+#include "Actors/Boss.h"
 #include "UI/Screens/HUD.h"
 #include "UI/Screens/MainMenu.h"
 #include "UI/Screens/PauseMenu.h"
@@ -40,6 +41,7 @@ Game::Game()
         ,mUpdatingActors(false)
         ,mCameraPos(Vector2::Zero)
         ,mRobot(nullptr)
+        ,mBoss(nullptr)
         ,mAudio(nullptr)
         ,mHUD(nullptr)
         ,mLevelData(nullptr)
@@ -162,6 +164,7 @@ void Game::UnloadScene()
 
     // Reset pointers
     mRobot = nullptr;
+    mBoss = nullptr;
     // HUD already deleted in the UI stack loop above
     mHUD = nullptr;
 }
@@ -205,6 +208,30 @@ void Game::SetScene(GameScene nextScene)
             if (mRobot && mHUD)
             {
                 mHUD->SetHealth(mRobot->GetHitPoints());
+            }
+
+            // Spawn do Boss à frente do robô, na mesma linha horizontal
+            {
+                Vector2 bossPos;
+                if (mRobot) {
+                    // Spawnar 10 tiles à frente do robô, na mesma altura Y
+                    bossPos = Vector2(mRobot->GetPosition().x + TILE_SIZE * 10.0f,
+                                      mRobot->GetPosition().y);
+                } else {
+                    bossPos = Vector2(TILE_SIZE * 12.0f, TILE_SIZE * 10.0f);
+                }
+                mBoss = new Boss(this, bossPos, 80.0f, 50);
+                if (mBoss)
+                {
+                    mBoss->SetScale(Vector2(1.5f, 1.5f));
+                }
+
+                // Mostrar barra de vida do Boss
+                if (mHUD)
+                {
+                    mHUD->ShowBossHealthBar(true);
+                    mHUD->SetBossHealth(50, 50);
+                }
             }
             break;
         }
@@ -551,6 +578,17 @@ void Game::UpdateGame(float deltaTime)
                 mEmergencyAlertHandle = SoundHandle::Invalid;
             }
             SetScene(GameScene::GameOver);
+            return;
+        }
+        
+        // Atualizar vida do Boss no HUD (Level 3)
+        if (mBoss && mHUD) {
+            mHUD->SetBossHealth(mBoss->GetHitPoints(), 50);
+        }
+        
+        // Verificar vitória no Level 3 (Boss morto)
+        if (mBoss && mBoss->GetState() == ActorState::Destroy) {
+            SetScene(GameScene::Win);
             return;
         }
 

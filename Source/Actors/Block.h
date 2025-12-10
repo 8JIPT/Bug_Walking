@@ -12,7 +12,7 @@ public:
     explicit Block(Game* game, const std::string &texturePath, bool canBeBumped = false, bool canCreateMushroom = false);
 
     void Kill() override;
-    void OnUpdate(float deltaTime);
+    void OnUpdate(float deltaTime) override;
     void SetFlip(bool flipH, bool flipV, bool flipD);
     bool GetCanBeBumped() const {return mCanBeBumped;}
 private:

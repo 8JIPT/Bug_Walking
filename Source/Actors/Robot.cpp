@@ -24,7 +24,7 @@ Robot::Robot(Game* game, const float forwardSpeed, const float jumpSpeed)
         , mCurrentLevel(RepairLevel::Critical) // Garante que começa em Critical
 {
     mNormalDraw = new AnimatorComponent(this, "../Assets/Sprites/Robot/Character_SpriteSheet_RP1_free (40x40).png", "../Assets/Sprites/Robot/Robot.json", Game::TILE_SIZE * 2, Game::TILE_SIZE * 2, 100);
-    mNormalDraw->SetOffset(Vector2(0, Game::TILE_SIZE * -0.4));
+    mNormalDraw->SetOffset(Vector2(0, Game::TILE_SIZE * -0.8));
     mNormalDraw->AddAnimation("idle", std::vector<int>{0,1,2,3,4});
     mNormalDraw->AddAnimation("run", std::vector<int>{5,6,7,8,9,10,11,12});
     mNormalDraw->AddAnimation("shot", std::vector<int>{13,14});
@@ -33,7 +33,7 @@ Robot::Robot(Game* game, const float forwardSpeed, const float jumpSpeed)
     mNormalDraw->SetAnimFPS(10.0f);
     mNormalDraw->SetAnimation("idle");
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
-    mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::TILE_SIZE * 0.8, Game::TILE_SIZE * 1.3, ColliderLayer::Player, false);
+    mColliderComponent = new AABBColliderComponent(this, 0, -10, Game::TILE_SIZE * 0.8, Game::TILE_SIZE * 1.3, ColliderLayer::Player, false);
     SetRepairLevel(RepairLevel::Critical);
 }
 
@@ -121,13 +121,17 @@ void Robot::OnUpdate(float deltaTime)
     
     if (mRigidBodyComponent->GetVelocity().y != 0.0f) SetOffGround();
 
-    float winY = GetGame()->GetWinConditionY();
-    float winX = GetGame()->GetWinConditionX();
-    bool wonByY = (winY >= 0 && mPosition.y <= winY);
-    bool wonByX = (winX >= 0 && mPosition.x >= winX);
-    if ((wonByY || wonByX) && !mIsDead) {
-        GetGame()->SetScene(GameScene::Win);
-        return;
+    // Verificação de vitória por posição - apenas se não houver Boss (Level 3)
+    // No Level 3, a vitória só ocorre ao derrotar o Boss
+    if (GetGame()->GetBoss() == nullptr) {
+        float winY = GetGame()->GetWinConditionY();
+        float winX = GetGame()->GetWinConditionX();
+        bool wonByY = (winY >= 0 && mPosition.y <= winY);
+        bool wonByX = (winX >= 0 && mPosition.x >= winX);
+        if ((wonByY || wonByX) && !mIsDead) {
+            GetGame()->SetScene(GameScene::Win);
+            return;
+        }
     }
     if (mPosition.y > GetGame()->GetLevelHeight() * Game::TILE_SIZE) {
         Kill();

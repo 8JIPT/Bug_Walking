@@ -15,6 +15,8 @@ public:
 
     void SetHealth(int health);
     void SetScore(int score);
+    void SetBossHealth(int health, int maxHealth);
+    void ShowBossHealthBar(bool show);
     void Update(float deltaTime) override;
 
 private:
@@ -34,4 +36,10 @@ private:
     bool mIsAnimatingHeart;
     int mAnimatingHeartIndex;
     int mCurrentHeartFrame;  // For animation: 0=full, 4=empty
+    
+    // Boss health bar
+    UIRect* mBossHealthBarBg;
+    UIRect* mBossHealthBar;
+    bool mBossHealthBarVisible;
+    float mMaxBossBarWidth;
 };

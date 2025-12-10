@@ -16,6 +16,8 @@ public:
 
     void Draw(class Shader* shader) override;
     void SetColor(const Vector4 &color) { mColor = color; }
+    void SetSize(const Vector2 &size) { mSize = size; }
+    const Vector2& GetSize() const { return mSize; }
 
 protected:
     Vector2 mSize;

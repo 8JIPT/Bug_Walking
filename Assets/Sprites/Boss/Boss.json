@@ -1,0 +1,34 @@
+{
+  "frames": [
+    { "filename": "enemy03_0",  "frame": { "x": 0,   "y": 0,  "w": 32, "h": 36 } },
+    { "filename": "enemy03_1",  "frame": { "x": 32,  "y": 0,  "w": 32, "h": 36 } },
+    { "filename": "enemy03_2",  "frame": { "x": 64,  "y": 0,  "w": 32, "h": 36 } },
+    { "filename": "enemy03_3",  "frame": { "x": 96,  "y": 0,  "w": 32, "h": 36 } },
+    { "filename": "enemy03_4",  "frame": { "x": 128, "y": 0,  "w": 32, "h": 36 } },
+    { "filename": "enemy03_5",  "frame": { "x": 160, "y": 0,  "w": 32, "h": 36 } },
+    { "filename": "enemy03_6",  "frame": { "x": 192, "y": 0,  "w": 32, "h": 36 } },
+    { "filename": "enemy03_7",  "frame": { "x": 224, "y": 0,  "w": 32, "h": 36 } },
+
+    { "filename": "enemy03_8",  "frame": { "x": 0,   "y": 36, "w": 32, "h": 36 } },
+    { "filename": "enemy03_9",  "frame": { "x": 32,  "y": 36, "w": 32, "h": 36 } },
+    { "filename": "enemy03_10", "frame": { "x": 64,  "y": 36, "w": 32, "h": 36 } },
+    { "filename": "enemy03_11", "frame": { "x": 96,  "y": 36, "w": 32, "h": 36 } },
+    { "filename": "enemy03_12", "frame": { "x": 128, "y": 36, "w": 32, "h": 36 } },
+    { "filename": "enemy03_13", "frame": { "x": 160, "y": 36, "w": 32, "h": 36 } },
+    { "filename": "enemy03_14", "frame": { "x": 192, "y": 36, "w": 32, "h": 36 } },
+    { "filename": "enemy03_15", "frame": { "x": 224, "y": 36, "w": 32, "h": 36 } },
+
+    { "filename": "enemy03_16", "frame": { "x": 0,   "y": 72, "w": 32, "h": 36 } },
+    { "filename": "enemy03_17", "frame": { "x": 32,  "y": 72, "w": 32, "h": 36 } },
+    { "filename": "enemy03_18", "frame": { "x": 64,  "y": 72, "w": 32, "h": 36 } },
+    { "filename": "enemy03_19", "frame": { "x": 96,  "y": 72, "w": 32, "h": 36 } },
+    { "filename": "enemy03_20", "frame": { "x": 128, "y": 72, "w": 32, "h": 36 } },
+    { "filename": "enemy03_21", "frame": { "x": 160, "y": 72, "w": 32, "h": 36 } },
+    { "filename": "enemy03_22", "frame": { "x": 192, "y": 72, "w": 32, "h": 36 } },
+    { "filename": "enemy03_23", "frame": { "x": 224, "y": 72, "w": 32, "h": 36 } }
+  ],
+  "meta": {
+    "image": "Enemy03_SpriteSheet_RP1 (32x36).png",
+    "size": { "w": 256, "h": 108 }
+  }
+}

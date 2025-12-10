@@ -14,6 +14,8 @@ HUD::HUD(class Game* game, const std::string& fontName)
     , mIsAnimatingHeart(false)
     , mAnimatingHeartIndex(-1)
     , mCurrentHeartFrame(0)
+    , mBossHealthBarVisible(false)
+    , mMaxBossBarWidth(300.0f)
 {
     Vector2 hudPos(80.0f, 40.0f);
     int heartSpacing = 40;
@@ -23,6 +25,21 @@ HUD::HUD(class Game* game, const std::string& fontName)
     mHeart3 = AddImage("../Assets/HUD/heart1.png", Vector2(hudPos.x + heartSpacing * 2, hudPos.y), 2.0f);
     mHeart4 = AddImage("../Assets/HUD/heart1.png", Vector2(hudPos.x + heartSpacing * 3, hudPos.y), 2.0f);
     mHeart5 = AddImage("../Assets/HUD/heart1.png", Vector2(hudPos.x + heartSpacing * 4, hudPos.y), 2.0f);
+    
+    // Boss health bar (no topo da tela, centralizado)
+    Vector2 bossBarPos(Game::WINDOW_WIDTH / 2.0f, 50.0f);
+    float barWidth = 300.0f;
+    float barHeight = 20.0f;
+    
+    // Fundo da barra (vermelho escuro)
+    mBossHealthBarBg = AddRect(bossBarPos, Vector2(barWidth, barHeight));
+    mBossHealthBarBg->SetColor(Vector4(0.4f, 0.0f, 0.0f, 1.0f));
+    mBossHealthBarBg->SetIsVisible(false);
+    
+    // Barra de vida (vermelho)
+    mBossHealthBar = AddRect(bossBarPos, Vector2(barWidth, barHeight));
+    mBossHealthBar->SetColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+    mBossHealthBar->SetIsVisible(false);
 }
 
 void HUD::Update(float deltaTime)
@@ -107,4 +124,28 @@ void HUD::SetHealth(int health)
 void HUD::SetScore(int score)
 {
     mScore->SetText(std::to_string(score));
+}
+
+void HUD::SetBossHealth(int health, int maxHealth)
+{
+    if (!mBossHealthBarVisible) return;
+    
+    // Calcular largura da barra baseada na porcentagem de vida
+    float percentage = static_cast<float>(health) / static_cast<float>(maxHealth);
+    float currentWidth = mMaxBossBarWidth * percentage;
+    
+    // Atualizar tamanho da barra
+    mBossHealthBar->SetSize(Vector2(currentWidth, 20.0f));
+    
+    // Ajustar posição para manter centralizada
+    Vector2 centerPos(Game::WINDOW_WIDTH / 2.0f, 50.0f);
+    float offset = (mMaxBossBarWidth - currentWidth) / 2.0f;
+    mBossHealthBar->SetOffset(Vector2(centerPos.x - offset, centerPos.y));
+}
+
+void HUD::ShowBossHealthBar(bool show)
+{
+    mBossHealthBarVisible = show;
+    mBossHealthBarBg->SetIsVisible(show);
+    mBossHealthBar->SetIsVisible(show);
 }

@@ -72,6 +72,7 @@ public:
 
     // Getters
     class Robot* GetPlayer() { return mRobot; }
+    class Boss* GetBoss() { return mBoss; }
     class HUD* GetHUD() { return mHUD; }
     bool GetIsPaused() { return mIsPaused; }
     int GetLevelWidth() const { return mLevelWidth; }
@@ -176,6 +177,7 @@ private:
 
     // Game-specific
     class Robot *mRobot;
+    class Boss *mBoss;
     class HUD *mHUD;
     int **mLevelData;
     int mLevelWidth;
