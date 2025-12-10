@@ -115,6 +115,7 @@ public:
 
     void PlayGlitchChunk() const;
     void PlayFailedShotChunk() const;
+    void PlayRingPickupChunk() const;
 
     int LoadProgressData();
     void SaveProgressData(int levelNumber);
@@ -166,6 +167,7 @@ private:
     Mix_Chunk *mStageClearChunk;
     Mix_Chunk* mGlitchChunk;
     Mix_Chunk* mFailedShotChunk;
+    Mix_Chunk* mRingPickupChunk;
 
     // Track elapsed time since game start
     Uint32 mTicksCount;

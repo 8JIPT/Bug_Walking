@@ -29,6 +29,7 @@ void GoldRing::OnHorizontalCollision(const float minOverlap, AABBColliderCompone
             if (robot) {
                 SDL_Log("[GoldRing] Cast para Robot* OK, chamando UpgradeRepairLevel");
                 robot->UpgradeRepairLevel();
+                GetGame()->PlayRingPickupChunk();
             } else {
                 SDL_Log("[GoldRing] Cast para Robot* FALHOU");
             }
@@ -47,6 +48,7 @@ void GoldRing::OnVerticalCollision(const float minOverlap, AABBColliderComponent
             if (robot) {
                 SDL_Log("[GoldRing] Cast para Robot* OK, chamando UpgradeRepairLevel");
                 robot->UpgradeRepairLevel();
+                GetGame()->PlayRingPickupChunk();
             } else {
                 SDL_Log("[GoldRing] Cast para Robot* FALHOU");
             }
