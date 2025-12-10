@@ -138,7 +138,7 @@ void Boss::Shoot()
     // Tocar som de tiro
     if (GetGame()->GetAudio())
     {
-        GetGame()->GetAudio()->PlaySound("Shoot.wav");
+        GetGame()->GetAudio()->PlaySound("BLLTBy_Bullet By Centred Fast_02.wav");
     }
 
     SDL_Log("BOSS shooting at player");
@@ -195,7 +195,7 @@ void Boss::TakeDamage(int damage)
         // Tocar som de dano
         if (GetGame()->GetAudio())
         {
-            GetGame()->GetAudio()->PlaySound("hurt.wav");
+            GetGame()->GetAudio()->PlaySound("explosion.wav");
         }
     }
 }
