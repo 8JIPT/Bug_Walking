@@ -25,6 +25,10 @@ HUD::HUD(class Game* game, const std::string& fontName)
     mHeart3 = AddImage("../Assets/HUD/heart1.png", Vector2(hudPos.x + heartSpacing * 2, hudPos.y), 2.0f);
     mHeart4 = AddImage("../Assets/HUD/heart1.png", Vector2(hudPos.x + heartSpacing * 3, hudPos.y), 2.0f);
     mHeart5 = AddImage("../Assets/HUD/heart1.png", Vector2(hudPos.x + heartSpacing * 4, hudPos.y), 2.0f);
+
+    // Barra de conserto
+    Vector2 gaugePos(120.0f, 100.0f);
+    mRepairGauge = new RepairGauge(game, gaugePos);
     
     // Boss health bar (no topo da tela, centralizado)
     Vector2 bossBarPos(Game::WINDOW_WIDTH / 2.0f, 50.0f);
@@ -40,6 +44,15 @@ HUD::HUD(class Game* game, const std::string& fontName)
     mBossHealthBar = AddRect(bossBarPos, Vector2(barWidth, barHeight));
     mBossHealthBar->SetColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
     mBossHealthBar->SetIsVisible(false);
+}
+
+HUD::~HUD()
+{
+    if (mRepairGauge)
+    {
+        delete mRepairGauge;
+        mRepairGauge = nullptr;
+    }
 }
 
 void HUD::Update(float deltaTime)
@@ -148,4 +161,11 @@ void HUD::ShowBossHealthBar(bool show)
     mBossHealthBarVisible = show;
     mBossHealthBarBg->SetIsVisible(show);
     mBossHealthBar->SetIsVisible(show);
+}
+
+void HUD::UpdateRepairState(RepairLevel level)
+{
+    if (mRepairGauge) {
+        mRepairGauge->UpdateState(level);
+    }
 }

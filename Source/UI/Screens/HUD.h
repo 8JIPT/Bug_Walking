@@ -5,19 +5,22 @@
 #pragma once
 
 #include <string>
-
 #include "UIScreen.h"
+#include "../RepairGauge.h"
 
 class HUD : public UIScreen
 {
 public:
     HUD(class Game* game, const std::string& fontName);
+    ~HUD();
 
     void SetHealth(int health);
     void SetScore(int score);
     void SetBossHealth(int health, int maxHealth);
     void ShowBossHealthBar(bool show);
     void Update(float deltaTime) override;
+
+    void UpdateRepairState(RepairLevel level);
 
 private:
     void UpdateHeartAnimation(float deltaTime);
@@ -42,4 +45,6 @@ private:
     UIRect* mBossHealthBar;
     bool mBossHealthBarVisible;
     float mMaxBossBarWidth;
+
+    RepairGauge* mRepairGauge;
 };
