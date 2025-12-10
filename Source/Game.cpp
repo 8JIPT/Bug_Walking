@@ -32,6 +32,7 @@
 #include "UI/Screens/GameOver.h"
 #include "UI/Screens/Win.h"
 #include "UI/Screens/CrossFadeScreen.h"
+#include "UI/Screens/IntroScene.h"
 
 Game::Game()
         :mWindow(nullptr)
@@ -190,6 +191,15 @@ void Game::SetScene(GameScene nextScene)
             }
             break;
         }
+        case GameScene::Intro:{
+                if (mMusicHandle != SoundHandle::Invalid) {
+                    mAudio->StopSound(mMusicHandle);
+                }
+
+                new IntroScene(this, "../Assets/Fonts/Silver.ttf");
+                break;
+        }
+
         case GameScene::Level: {
             // Reset camera to start position
             mCameraPos = Vector2::Zero;

@@ -22,7 +22,7 @@ MainMenu::MainMenu(class Game* game, const std::string& fontName)
         //AddRect(Vector2(centerX, centerY), Vector2(300.f, 60.f), 1.0f, 0.0f, 90)->SetColor(Vector4(0.0f, 0.0f, 1.0f, 1.0f));
         UIButton* startButton = AddButton("Start Game", [game = mGame, this](){
             this->Close();
-            new CrossFadeScreen(game, GameScene::Level);
+            new CrossFadeScreen(game, GameScene::Intro);
         }, Vector2(centerX, centerY), 1.0f, 0.0f, 32, 300, 110);
         startButton->SetTextColor(Color::White);
 
