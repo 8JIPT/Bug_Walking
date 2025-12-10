@@ -95,6 +95,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/GoldRing.h
         Source/Actors/SmokeEffect.h
         Source/Actors/SmokeEffect.cpp
+        Source/Actors/Elevator.cpp
+        Source/Actors/Elevator.h
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${GLEW_ROOT}/include ${SDL2_INCLUDE_DIRS})

@@ -133,7 +133,7 @@ void Robot::OnUpdate(float deltaTime)
     float winX = GetGame()->GetWinConditionX();
     bool wonByY = (winY >= 0 && mPosition.y <= winY);
     bool wonByX = (winX >= 0 && mPosition.x >= winX);
-    if ((wonByY || wonByX) && !mIsDead) {
+    if (wonByY && wonByX && !mIsDead) {
         GetGame()->SetScene(GameScene::Win);
         return;
     }
