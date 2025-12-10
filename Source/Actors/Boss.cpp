@@ -26,7 +26,7 @@ Boss::Boss(Game* game, const Vector2& spawnPosition, float moveSpeed, int maxHit
     , mShootTimer(0.0f)
     , mShootCooldown(2.0f)
     , mMissileTimer(0.0f)
-    , mMissileCooldown(5.0f)
+    , mMissileCooldown(7.0f)
 {
     SetPosition(spawnPosition);
 
@@ -152,7 +152,7 @@ void Boss::LaunchMissile()
 
     // Lançar míssil acima do Boss
     Vector2 missilePos = mPosition + Vector2(0.0f, -Game::TILE_SIZE * 2.0f);
-    new Missile(GetGame(), missilePos, 200.0f, 8.0f, 
+    new Missile(GetGame(), missilePos, 200.0f, 4.0f,
                 "../Assets/Sprites/Chaser/roc.png", 
                 Vector3(1.0f, 0.0f, 0.0f)); // Cor vermelha para o rastro
 
