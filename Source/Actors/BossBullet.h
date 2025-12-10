@@ -2,7 +2,7 @@
 #include "Actor.h"
 class RigidBodyComponent;
 class AABBColliderComponent;
-class RectComponent;
+class AnimatorComponent;
 
 class BossBullet : public Actor {
 public:
@@ -16,5 +16,5 @@ private:
     float mLiveTime;
     class RigidBodyComponent* mRigidBody;
     class AABBColliderComponent* mCollider;
-    class RectComponent* mRect;
+    class AnimatorComponent* mAnimator;
 };

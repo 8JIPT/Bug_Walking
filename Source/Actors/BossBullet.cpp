@@ -4,7 +4,7 @@
 #include "Boss.h"
 #include "../Game.h"
 #include "../Components/Physics/RigidBodyComponent.h"
-#include "../Components/Drawing/RectComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
 #include "../Components/Physics/AABBColliderComponent.h"
 
 BossBullet::BossBullet(Game* game, float direction, float speedY)
@@ -14,19 +14,24 @@ BossBullet::BossBullet(Game* game, float direction, float speedY)
     , mLiveTime(8.0f)
     , mRigidBody(nullptr)
     , mCollider(nullptr)
-    , mRect(nullptr)
+    , mAnimator(nullptr)
 {
-    // Retângulo maior e vermelho para diferenciar do tiro do player
-    mRect = new RectComponent(this, 16, 16, static_cast<RendererMode>(0), 110);
-    // Cor vermelha
-    mRect->SetColor(Vector3(255, 50, 50));
+    // Usar o sprite do BossGunShot
+    mAnimator = new AnimatorComponent(this, 
+        "../Assets/Sprites/BossGunShot/shoot.png",
+        "../Assets/Sprites/BossGunShot/shoot.json",
+        22, 16, 110);
+    
+    mAnimator->AddAnimation("shoot", std::vector<int>{0, 1, 2, 3});
+    mAnimator->SetAnimFPS(12.0f);
+    mAnimator->SetAnimation("shoot");
 
     mRigidBody = new RigidBodyComponent(this, 1.0f, 0.0f);
     mRigidBody->SetGravityScale(0.0f);
     mRigidBody->SetVelocity(Vector2(mSpeed, mSpeedY));
 
     // Camada Enemy para que colida com Player
-    mCollider = new AABBColliderComponent(this, 0, 0, 16, 16, ColliderLayer::Enemy, false, 10);
+    mCollider = new AABBColliderComponent(this, 0, 0, 11, 8, ColliderLayer::Enemy, false, 10);
 }
 
 void BossBullet::OnUpdate(float deltaTime)
