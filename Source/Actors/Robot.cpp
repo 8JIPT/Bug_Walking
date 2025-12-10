@@ -22,6 +22,7 @@ Robot::Robot(Game* game, const float forwardSpeed, const float jumpSpeed)
         , mGlitchDurationTimer(0.0f)
         , mIsInputLocked(false)
         , mCurrentLevel(RepairLevel::Critical) // Garante que começa em Critical
+        , mJumpCutoff(0.8f)
 {
     mNormalDraw = new AnimatorComponent(this, "../Assets/Sprites/Robot/Character_SpriteSheet_RP1_free (40x40).png", "../Assets/Sprites/Robot/Robot.json", Game::TILE_SIZE * 2, Game::TILE_SIZE * 2, 100);
     mNormalDraw->SetOffset(Vector2(0, Game::TILE_SIZE * -0.4));
@@ -86,6 +87,13 @@ void Robot::OnProcessInput(const uint8_t* state)
         mRigidBodyComponent->SetVelocity(vel);
         SetOffGround();
         GetGame()->PlayJumpChunk();
+    }
+    if (!state[SDL_SCANCODE_UP] && mRigidBodyComponent->GetVelocity().y < 0.0f) {
+        Vector2 vel = mRigidBodyComponent->GetVelocity();
+
+        vel.y *= mJumpCutoff;
+
+        mRigidBodyComponent->SetVelocity(vel);
     }
     if (state[SDL_SCANCODE_SPACE]) {
         HandleShooting();
