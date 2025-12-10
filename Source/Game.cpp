@@ -211,28 +211,12 @@ void Game::SetScene(GameScene nextScene)
                 mHUD->SetHealth(mRobot->GetHitPoints());
             }
 
-            // Spawn do Boss à frente do robô, na mesma linha horizontal
+            // Boss será spawnado no BuildLevel via tile ID 243
+            // Mostrar barra de vida do Boss se ele existir
+            if (mBoss && mHUD)
             {
-                Vector2 bossPos;
-                if (mRobot) {
-                    // Spawnar 10 tiles à frente do robô, na mesma altura Y
-                    bossPos = Vector2(mRobot->GetPosition().x + TILE_SIZE * 10.0f,
-                                      mRobot->GetPosition().y);
-                } else {
-                    bossPos = Vector2(TILE_SIZE * 12.0f, TILE_SIZE * 10.0f);
-                }
-                mBoss = new Boss(this, bossPos, 80.0f, 50);
-                if (mBoss)
-                {
-                    mBoss->SetScale(Vector2(1.5f, 1.5f));
-                }
-
-                // Mostrar barra de vida do Boss
-                if (mHUD)
-                {
-                    mHUD->ShowBossHealthBar(true);
-                    mHUD->SetBossHealth(50, 50);
-                }
+                mHUD->ShowBossHealthBar(true);
+                mHUD->SetBossHealth(50, 50);
             }
             break;
         }
@@ -424,6 +408,11 @@ void Game::BuildLevel(int** levelData, int width, int height){
                 case 242: {
                      block = new Block (this, "../Assets/Sprites/Elevator/floor3.png", false, 0.7f);
                      block->SetPosition(position);
+                    break;
+                }
+                case 243: {//Boss
+                    mBoss = new Boss(this, position, 80.0f, 50);
+                    mBoss->SetScale(Vector2(2.5f, 2.5f));
                     break;
                 }
                 default:
