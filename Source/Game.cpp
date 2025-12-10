@@ -210,6 +210,7 @@ void Game::SetScene(GameScene nextScene)
             if (mRobot && mHUD)
             {
                 mHUD->SetHealth(mRobot->GetHitPoints());
+                mHUD->UpdateRepairState(mRobot->GetRepairLevel());
             }
 
             // Play different music for level 3 (boss level)

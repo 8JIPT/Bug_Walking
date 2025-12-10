@@ -101,6 +101,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Boss.h
         Source/Actors/BossBullet.cpp
         Source/Actors/BossBullet.h
+        Source/UI/RepairGauge.cpp
+        Source/UI/RepairGauge.h
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${GLEW_ROOT}/include ${SDL2_INCLUDE_DIRS})

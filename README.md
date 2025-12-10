@@ -51,24 +51,35 @@ Menus do jogo e gameplay:
 
 
 # Créditos dos Assets Utilizados
+
+### Chars
 - Robô personagem principal: https://nicopardo.itch.io/x-reploit-pack?download
-- Laser: https://nicopardo.itch.io/x-reploit-pack?download
-- Som do pulo: https://brackeysgames.itch.io/brackeys-platformer-bundle
-- Som de hit: https://brackeysgames.itch.io/brackeys-platformer-bundle
-- Som de 1 Hit Point Remaining: https://koki-sekiguchi.itch.io/emergency-alert-sound-effect
-- Mísseis: https://opengameart.org/content/custom-missiles
-- Som dos mísseis: https://ne-mene.itch.io/general-sound-pack
 - Inimigo 1: https://free-game-assets.itch.io/free-drones-pack-pixel-art
 - Inimigo 2: https://penusbmic.itch.io/sci-fi-character-pack-7
+- Boss: https://nicopardo.itch.io/x-reploit-pack?download
+### Effects
+- Laser: https://nicopardo.itch.io/x-reploit-pack?download
+- Mísseis: https://opengameart.org/content/custom-missiles
+- Ring: https://nicopardo.itch.io/x-reploit-pack?download
+- Sprite da fumaça: https://opengameart.org/content/fire-smoke-animations
+- Elevator: https://pixel-assembly.itch.io/animated-elevator
+### Map
+- Industrial Zone: https://free-game-assets.itch.io/free-industrial-zone-tileset-pixel-art
+- Power Station: https://free-game-assets.itch.io/power-station-free-tileset-pixel-art
+### UI
+- Barra de vida: https://atebits.itch.io/health-pack
+- Fonte: https://poppyworks.itch.io/silver
+- Logo: IA
+### Sounds
+- Som do pulo: https://brackeysgames.itch.io/brackeys-platformer-bundle
+- Som de hit: https://brackeysgames.itch.io/brackeys-platformer-bundle
+- Som de dano no Boss: https://brackeysgames.itch.io/brackeys-platformer-bundle
+- Som do laser do Boss: https://shapeforms.itch.io/shapeforms-audio-free-sfx
+- Boss Music: https://clement-panchout.itch.io/yet-another-free-music-pack
+- Som de 1 Hit Point Remaining: https://koki-sekiguchi.itch.io/emergency-alert-sound-effect
+- Som dos mísseis: https://ne-mene.itch.io/general-sound-pack
 - Som do Ataque do Inimigo 2: https://ne-mene.itch.io/general-sound-pack
-- Industrial Zone: https://free-game-assets.itch.io/free-industrial-zone-tileset-pixel-art  
-- Power Station: https://free-game-assets.itch.io/power-station-free-tileset-pixel-art  
-- Barra de vida: https://atebits.itch.io/health-pack  
-- Fonte: https://poppyworks.itch.io/silver  
 - SFX do Glitch: https://opengameart.org/content/ice-electricity-magic
 - Musica de fundo: https://opengameart.org/content/the-gears-of-progress
 - Som da falha do disparo: https://pixabay.com/sound-effects/empty-gun-shot-6209/
-- Sprite da fumaça: https://opengameart.org/content/fire-smoke-animations
 - Sons dos Menus: https://cyrex-studios.itch.io/universal-ui-soundpack
-- Elevator: https://pixel-assembly.itch.io/animated-elevator
-- Logo: IA

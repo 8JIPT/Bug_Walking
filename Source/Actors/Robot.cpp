@@ -40,6 +40,11 @@ Robot::Robot(Game* game, const float forwardSpeed, const float jumpSpeed)
 
 void Robot::SetRepairLevel(RepairLevel level) {
     mCurrentLevel = level;
+
+    if (GetGame()->GetHUD()) {
+        GetGame()->GetHUD()->UpdateRepairState(level);
+    }
+
     switch (level) {
     case RepairLevel::Critical:
         mTimeBetweenGlitches = 10.0f;
