@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.11.2" name="facto_powerplant" tilewidth="103" tileheight="192" tilecount="243" columns="0">
+<tileset version="1.10" tiledversion="1.11.2" name="facto_powerplant" tilewidth="103" tileheight="192" tilecount="244" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image source="../../Sprites/Blocks/Free Industrial Zone Tileset/1 Tiles/IndustrialTile_01.png" width="32" height="32"/>
@@ -729,5 +729,8 @@
  </tile>
  <tile id="243">
   <image source="../../Sprites/Boss/boss.png" width="28" height="33"/>
+ </tile>
+ <tile id="244">
+  <image source="../../Sprites/GoldRing/ring.png" width="10" height="10"/>
  </tile>
 </tileset>

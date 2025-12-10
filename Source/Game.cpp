@@ -415,6 +415,11 @@ void Game::BuildLevel(int** levelData, int width, int height){
                     mBoss->SetScale(Vector2(1.5f, 1.5f));
                     break;
                 }
+                case 244: {
+                    GoldRing* ring = new GoldRing(this);
+                    ring->SetPosition(position);
+                    break;
+                }
                 default:
                     // For regular tiles, use the CSV value directly for the filename
                     std::string blockAddr = "/Free Industrial Zone Tileset/1 Tiles/IndustrialTile_";
@@ -430,8 +435,6 @@ void Game::BuildLevel(int** levelData, int width, int height){
             }
         }
     }
-    // Adiciona 10 GoldRings aleatórios após construir o mapa
-    SpawnRandomGoldRings(10, width, height, levelData);
 }
 
 void Game::LoadSounds() {
@@ -831,21 +834,4 @@ void Game::Shutdown()
     Mix_CloseAudio();
 
     SDL_Quit();
-}
-
-void Game::SpawnRandomGoldRings(int quantidade, int width, int height, int** levelData) {
-    int tentativas = 0;
-    int maxTentativas = quantidade * 10;
-    int ringsCriados = 0;
-    while (ringsCriados < quantidade && tentativas < maxTentativas) {
-        int col = rand() % width;
-        int row = rand() % height;
-        if (levelData[row][col] == -1) { // Tile vazio
-            Vector2 pos(col * TILE_SIZE + TILE_SIZE * 0.5f, row * TILE_SIZE + TILE_SIZE * 0.5f);
-            GoldRing* ring = new GoldRing(this);
-            ring->SetPosition(pos);
-            ringsCriados++;
-        }
-        tentativas++;
-    }
 }
