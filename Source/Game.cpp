@@ -212,6 +212,20 @@ void Game::SetScene(GameScene nextScene)
                 mHUD->SetHealth(mRobot->GetHitPoints());
             }
 
+            // Play different music for level 3 (boss level)
+            if (mAudio) {
+                if (mMusicHandle != SoundHandle::Invalid) {
+                    mAudio->StopSound(mMusicHandle);
+                }
+                if (currentLevel == 3) {
+                    mMusicHandle = mAudio->PlaySound("Clement Panchout _ MW FUP _ Chaotic Boss.wav", true);
+                    mAudio->SetSoundVolume(mMusicHandle, 51); // 40% volume
+                } else {
+                    mMusicHandle = mAudio->PlaySound("S31-The Gears of Progress.ogg", true);
+                    mAudio->SetSoundVolume(mMusicHandle, 51); // 40% volume
+                }
+            }
+
             // Boss será spawnado no BuildLevel via tile ID 243
             // Mostrar barra de vida do Boss somente no nível 3 (se existir)
             if (mHUD)
@@ -453,6 +467,7 @@ void Game::LoadSounds() {
     mStageClearChunk = Mix_LoadWAV("../Assets/Sounds/StageClear.wav");
     mGlitchChunk     = Mix_LoadWAV("../Assets/Sounds/Glitch.flac");
     mFailedShotChunk = Mix_LoadWAV("../Assets/Sounds/FailedShot.mp3");
+    mRingPickupChunk = Mix_LoadWAV("../Assets/Sounds/gear.wav");
 
     if (!mGlitchChunk) {
         SDL_Log("Falha ao carregar Glitch.flac: %s", Mix_GetError());
@@ -486,8 +501,14 @@ void Game::PlayGlitchChunk() const {
 }
 
 void Game::PlayFailedShotChunk() const {
-    if (mGlitchChunk) {
+    if (mFailedShotChunk) {
         Mix_PlayChannel(-1, mFailedShotChunk, 0);
+    }
+}
+
+void Game::PlayRingPickupChunk() const {
+    if (mRingPickupChunk) {
+        Mix_PlayChannel(-1, mRingPickupChunk, 0);
     }
 }
 
