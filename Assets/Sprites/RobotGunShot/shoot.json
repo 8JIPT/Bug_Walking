@@ -1,0 +1,115 @@
+{
+  "frames": [
+    {
+      "filename": "shoot4.png",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 11,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 11,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 11,
+        "h": 8
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "shoot5.png",
+      "frame": {
+        "x": 0,
+        "y": 8,
+        "w": 11,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 11,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 11,
+        "h": 8
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "shoot6.png",
+      "frame": {
+        "x": 11,
+        "y": 0,
+        "w": 11,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 11,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 11,
+        "h": 8
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "shoot7.png",
+      "frame": {
+        "x": 0,
+        "y": 16,
+        "w": 11,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 11,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 11,
+        "h": 8
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  ],
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "shoot.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 22,
+      "h": 24
+    },
+    "scale": 1
+  }
+}

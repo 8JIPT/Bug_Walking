@@ -3,21 +3,27 @@
 #include "../Components/Physics/RigidBodyComponent.h"
 #include "../Components/Drawing/DrawComponent.h"
 #include "../Components/Physics/AABBColliderComponent.h"
-#include "../Components/Drawing/RectComponent.h"
+#include "../Components/Drawing/AnimatorComponent.h"
 
 Bullet::Bullet(Game* game, float direction)
     : Actor(game)
     , mSpeed(800.0f * direction)
     , mLiveTime(5.0f)
 {
-    // rect como placeholder
-    mRect = new RectComponent(this, 10, 10, static_cast<RendererMode>(0), 110);
-    mRect->SetColor(Vector3(255, 255, 0));
+    // Use animated sprite (all 4 frames)
+    mAnimator = new AnimatorComponent(this, 
+        "../Assets/Sprites/RobotGunShot/shoot.png",
+        "../Assets/Sprites/RobotGunShot/shoot.json",
+        22, 16, 110);
+    
+    mAnimator->AddAnimation("shoot", std::vector<int>{0, 1, 2, 3});
+    mAnimator->SetAnimFPS(12.0f);
+    mAnimator->SetAnimation("shoot");
 
     mRigidBody = new RigidBodyComponent(this, 1.0f, 0.0f);
     mRigidBody->SetVelocity(Vector2(mSpeed, 0.0f));
 
-    mCollider = new AABBColliderComponent(this, 0, 0, 10, 10, ColliderLayer::Player, false, 10);
+    mCollider = new AABBColliderComponent(this, 0, 0, 11, 8, ColliderLayer::Player, false, 10);
 
     mRigidBody->SetGravityScale(0.0f);
 }
