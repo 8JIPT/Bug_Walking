@@ -41,14 +41,16 @@ Boss::Boss(Game* game, const Vector2& spawnPosition, float moveSpeed, int maxHit
     mAnimatorComponent->SetAnimFPS(5.0f);
     // Fixa animação para evitar flicker
     mAnimatorComponent->SetAnimation("walk");
-    // Offset para levantar o sprite do chão
-    mAnimatorComponent->SetOffset(Vector2(0.0f, -7.0f));
+    // Offset para levantar o sprite do chão (compensado para escala 3x)
+    mAnimatorComponent->SetOffset(Vector2(0.0f, -37.0f));
+
+    // Definir escala visual do boss para 3x
+    mScale = Vector2(3.0f, 3.0f);
 
     // Componente de física (com gravidade para ficar no chão)
     mRigidBodyComponent = new RigidBodyComponent(this, 1.2f, 8.0f, true);
 
-    // Colisor principal do boss (tamanho do sprite)
-    // Offset Y = 0 para que o centro do sprite fique no centro do colisor
+    // Colisor principal do boss (mantido no tamanho original 32x36)
     mColliderComponent = new AABBColliderComponent(this, 0, 0, 32, 36,
                                                    ColliderLayer::Enemy, false);
 
@@ -93,8 +95,9 @@ void Boss::OnUpdate(float deltaTime)
     velocity.x = mMoveSpeed * mPatrolDirection;
     mRigidBodyComponent->SetVelocity(velocity);
     
-    // Atualizar escala baseado na direção
-    mScale.x = mPatrolDirection > 0 ? 1.0f : -1.0f;
+    // Atualizar escala baseado na direção (mantendo escala 3x)
+    mScale.x = mPatrolDirection > 0 ? 3.0f : -3.0f;
+    mScale.y = 3.0f;
 
     // Verificar se pode atirar no jogador
     if (CanSeePlayer() && mShootTimer >= mShootCooldown)

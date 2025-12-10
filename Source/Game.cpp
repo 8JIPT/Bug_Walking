@@ -419,8 +419,8 @@ void Game::BuildLevel(int** levelData, int width, int height){
                     break;
                 }
                 case 243: {//Boss
+                    // Spawn do Boss na posição do tile (offset visual já compensa altura)
                     mBoss = new Boss(this, position, 80.0f, 50);
-                    mBoss->SetScale(Vector2(1.5f, 1.5f));
                     break;
                 }
                 case 244: {
@@ -603,7 +603,7 @@ void Game::UpdateGame(float deltaTime)
             SetScene(GameScene::GameOver);
             return;
         }
-        
+
         // Atualizar vida do Boss no HUD (apenas Level 3)
         if (mBoss && mHUD && mCurrentLevel == 3) {
             mHUD->SetBossHealth(mBoss->GetHitPoints(), 50);
